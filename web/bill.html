@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Bill — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --primary-hover: #E31C5F;
+          --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55);
+          --hover: rgba(255,255,255,0.08);
+          --success: #10B981; --danger: #EF4444;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55);
+          --hover: rgba(0,0,0,0.05);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+
+        /* SIDEBAR */
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+
+        /* MAIN */
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .back-btn { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--subtext); font-size: 0.825rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .back-btn:hover { color: var(--text); background: var(--hover); }
+        .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--text); }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+        .btn-icon:hover { background: var(--hover); }
+        .btn-primary { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: var(--primary); border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(255,56,92,0.3); text-decoration: none; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-success { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: var(--success); border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .btn-success:hover { background: #059669; transform: translateY(-1px); }
+        .btn-outline { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: transparent; border: 1px solid var(--card-border); color: var(--subtext); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .btn-outline:hover { color: var(--text); background: var(--hover); }
+
+        .content { padding: 2rem; max-width: 860px; }
+
+        /* GENERATE PROMPT */
+        .generate-prompt { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+        .generate-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .generate-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 0.5rem; }
+        .generate-sub { font-size: 0.875rem; color: var(--subtext); margin-bottom: 1.5rem; }
+
+        /* BILL DOCUMENT */
+        .bill-document { background: white; color: #1a1a1a; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-bottom: 1.5rem; }
+
+        .bill-header { background: linear-gradient(135deg, #1a1a2e, #2d1a3e); color: white; padding: 2.5rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+        .bill-hotel-name { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: white; margin-bottom: 0.2rem; }
+        .bill-hotel-sub { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+        .bill-hotel-contact { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; line-height: 1.6; }
+        .bill-title-box { text-align: right; }
+        .bill-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: #FF385C; letter-spacing: 0.05em; }
+        .bill-num { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+        .bill-date { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+
+        .bill-body { padding: 2rem; }
+
+        .bill-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e7eb; }
+        .bill-info-section { }
+        .bill-info-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.75rem; }
+        .bill-info-name { font-size: 1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.2rem; }
+        .bill-info-detail { font-size: 0.825rem; color: #6b7280; line-height: 1.6; }
+
+        .bill-items-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #9ca3af; margin-bottom: 1rem; }
+        .bill-items-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .bill-items-table th { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; padding: 0.6rem 1rem; text-align: left; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+        .bill-items-table th:last-child { text-align: right; }
+        .bill-items-table td { padding: 0.9rem 1rem; font-size: 0.875rem; color: #374151; border-bottom: 1px solid #f3f4f6; }
+        .bill-items-table td:last-child { text-align: right; font-weight: 500; }
+        .bill-items-table tr:last-child td { border-bottom: none; }
+
+        .bill-totals { margin-left: auto; max-width: 300px; }
+        .bill-total-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.875rem; color: #6b7280; }
+        .bill-total-divider { border: none; border-top: 1px solid #e5e7eb; margin: 0.75rem 0; }
+        .bill-grand-total { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; }
+        .bill-grand-label { font-size: 1rem; font-weight: 700; color: #1a1a1a; }
+        .bill-grand-amount { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: #FF385C; }
+
+        .bill-footer { background: #f9fafb; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid #e5e7eb; }
+        .bill-footer-note { font-size: 0.78rem; color: #9ca3af; max-width: 400px; line-height: 1.5; }
+        .bill-paid-stamp { background: rgba(16,185,129,0.1); border: 2px solid #10B981; border-radius: 10px; padding: 0.5rem 1.2rem; color: #10B981; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.05em; display: none; }
+        .bill-paid-stamp.show { display: block; }
+        .bill-unpaid-stamp { background: rgba(245,158,11,0.1); border: 2px solid #F59E0B; border-radius: 10px; padding: 0.5rem 1.2rem; color: #F59E0B; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.05em; }
+
+        /* ACTION BAR */
+        .action-bar { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+        /* LOADING */
+        .loading-screen { text-align: center; padding: 4rem 2rem; color: var(--subtext); }
+
+        /* PRINT STYLES */
+        @media print {
+          .sidebar, .topbar, .action-bar, .generate-prompt, .mobile-toggle, .sidebar-overlay { display: none !important; }
+          .main { margin-left: 0 !important; }
+          body { background: white !important; }
+          .bill-document { box-shadow: none !important; border-radius: 0 !important; }
+          .content { padding: 0 !important; }
+        }
+
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); }
+          .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; }
+          .mobile-toggle { display: flex; }
+          .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; }
+          .bill-info-grid { grid-template-columns: 1fr; }
+          .bill-header { flex-direction: column; }
+          .bill-title-box { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item active"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="help.html" class="nav-item"><span class="nav-icon">❓</span> Help</a>
+        <a href="settings.html" class="nav-item" id="settingsNavItem"><span class="nav-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div><div class="user-name" id="userName">Admin</div><div class="user-role">Staff Portal</div></div>
+        </div>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="reservations.html" class="back-btn">← Back</a>
+            <div class="topbar-title">Bill & Invoice</div>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn-icon" id="themeBtn">🌙</button>
+        </div>
+    </div>
+
+    <div class="content" id="mainContent">
+        <div class="loading-screen">⏳ Loading...</div>
+    </div>
+</main>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    const username = localStorage.getItem('username') || 'Admin';
+    document.getElementById('userName').textContent = username;
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+    const params = new URLSearchParams(window.location.search);
+    const reservationId = params.get('id');
+    if (!reservationId) window.location.href = 'reservations.html';
+
+    let billData = null;
+
+    async function init() {
+      // Try to load existing bill first
+      await loadBill();
+    }
+
+    async function loadBill() {
+      try {
+        const res = await fetch(`/api/bills/${reservationId}`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          billData = data.data;
+          renderBill(billData);
+        } else {
+          // No bill yet — show generate prompt
+          renderGeneratePrompt();
+        }
+      } catch (e) {
+        renderGeneratePrompt();
+      }
+    }
+
+    function renderGeneratePrompt() {
+      document.getElementById('mainContent').innerHTML = `
+        <div class="generate-prompt">
+          <div class="generate-icon">🧾</div>
+          <div class="generate-title">No Bill Generated Yet</div>
+          <div class="generate-sub">Click the button below to calculate and generate the bill for Reservation #${String(reservationId).padStart(4,'0')}.</div>
+          <button class="btn-primary" style="margin:0 auto;" onclick="generateBill()">
+            ✦ Generate Bill
+          </button>
+        </div>
+      `;
+    }
+
+    async function generateBill() {
+      try {
+        const res = await fetch(`/api/bills/${reservationId}/generate`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          billData = data.data;
+          renderBill(billData);
+        } else {
+          alert(data.message || 'Failed to generate bill.');
+        }
+      } catch (e) {
+        alert('Server error. Please try again.');
+      }
+    }
+
+    async function markAsPaid() {
+      if (!billData) return;
+      const btn = document.getElementById('markPaidBtn');
+      btn.textContent = 'Processing...'; btn.disabled = true;
+      try {
+        const res = await fetch(`/api/bills/${billData.billId}/pay`, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          billData.isPaid = true;
+          renderBill(billData);
+        } else {
+          alert(data.message || 'Failed to mark as paid.');
+          btn.textContent = '✓ Mark as Paid'; btn.disabled = false;
+        }
+      } catch (e) {
+        alert('Server error.');
+        btn.textContent = '✓ Mark as Paid'; btn.disabled = false;
+      }
+    }
+
+    function renderBill(b) {
+      const generated = b.generatedDate ? new Date(b.generatedDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+      document.getElementById('mainContent').innerHTML = `
+        <!-- BILL DOCUMENT -->
+        <div class="bill-document" id="billDoc">
+
+          <!-- BILL HEADER -->
+          <div class="bill-header">
+            <div>
+              <div class="bill-hotel-name">Ocean View Resort</div>
+              <div class="bill-hotel-sub">Luxury Beachside Hotel</div>
+              <div class="bill-hotel-contact">
+                📍 Galle Beach Road, Galle, Sri Lanka<br>
+                📞 +94 91 234 5678 · ✉ info@oceanviewresort.lk
+              </div>
+            </div>
+            <div class="bill-title-box">
+              <div class="bill-title">INVOICE</div>
+              <div class="bill-num">Bill #${String(b.billId).padStart(6,'0')}</div>
+              <div class="bill-date">Issued: ${generated}</div>
+            </div>
+          </div>
+
+          <!-- BILL BODY -->
+          <div class="bill-body">
+
+            <!-- INFO GRID -->
+            <div class="bill-info-grid">
+              <div class="bill-info-section">
+                <div class="bill-info-label">Billed To</div>
+                <div class="bill-info-name">${b.guestName}</div>
+                <div class="bill-info-detail">
+                  Reservation #${String(b.reservationId).padStart(4,'0')}
+                </div>
+              </div>
+              <div class="bill-info-section">
+                <div class="bill-info-label">Room Details</div>
+                <div class="bill-info-name">Room ${b.roomNumber} — ${b.roomType}</div>
+                <div class="bill-info-detail">
+                  Check-In: ${b.checkInDate}<br>
+                  Check-Out: ${b.checkOutDate}<br>
+                  Duration: ${b.numberOfNights} Night${b.numberOfNights !== 1 ? 's' : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- ITEMS TABLE -->
+            <div class="bill-items-title">Charges</div>
+            <table class="bill-items-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Rate</th>
+                  <th>Qty</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>${b.roomType} Room — Room ${b.roomNumber}</strong><br>
+                    <span style="font-size:0.78rem;color:#9ca3af;">${b.checkInDate} to ${b.checkOutDate}</span>
+                  </td>
+                  <td>LKR ${b.pricePerNight.toLocaleString()}</td>
+                  <td>${b.numberOfNights} night${b.numberOfNights !== 1 ? 's' : ''}</td>
+                  <td>LKR ${b.totalAmount.toLocaleString()}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- TOTALS -->
+            <div class="bill-totals">
+              <div class="bill-total-row"><span>Subtotal</span><span>LKR ${b.totalAmount.toLocaleString()}</span></div>
+              <div class="bill-total-row"><span>Tax (0%)</span><span>LKR 0</span></div>
+              <hr class="bill-total-divider"/>
+              <div class="bill-grand-total">
+                <span class="bill-grand-label">Total Due</span>
+                <span class="bill-grand-amount">LKR ${b.totalAmount.toLocaleString()}</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BILL FOOTER -->
+          <div class="bill-footer">
+            <div class="bill-footer-note">
+              Thank you for staying at Ocean View Resort. We hope you enjoyed your time with us and look forward to welcoming you again.
+            </div>
+            <div class="bill-paid-stamp ${b.isPaid ? 'show' : ''}">✓ PAID</div>
+            ${!b.isPaid ? '<div class="bill-unpaid-stamp">⏳ PENDING</div>' : ''}
+          </div>
+
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="action-bar">
+          ${!b.isPaid ? `<button class="btn-success" id="markPaidBtn" onclick="markAsPaid()">✓ Mark as Paid</button>` : '<span style="color:var(--success);font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;">✓ Payment Received</span>'}
+          <button class="btn-primary" onclick="window.print()">🖨 Print Bill</button>
+          <a href="reservation-detail.html?id=${b.reservationId}" class="btn-outline">← Back to Reservation</a>
+        </div>
+      `;
+    }
+
+    // Mobile sidebar
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('show');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+
+    init();
+</script>
+</body>
+</html>

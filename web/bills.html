@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Billing — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55); --hover: rgba(255,255,255,0.08);
+          --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55); --hover: rgba(0,0,0,0.05);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; }
+        .topbar-sub { font-size: 0.78rem; color: var(--subtext); margin-top: 0.1rem; }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+        .content { padding: 2rem; }
+        .stats-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .mini-stat { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1rem 1.5rem; flex: 1; min-width: 150px; }
+        .mini-stat-val { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; line-height: 1; }
+        .mini-stat-label { font-size: 0.72rem; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.3rem; }
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .search-wrap { position: relative; flex: 1; min-width: 220px; }
+        .search-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.9rem; opacity: 0.5; pointer-events: none; }
+        .search-input { width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; outline: none; transition: all 0.3s; }
+        .search-input::placeholder { color: var(--subtext); }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,56,92,0.1); }
+        .filter-select { padding: 0.7rem 1rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; outline: none; cursor: pointer; }
+        .filter-select option { background: #1a1a2e; }
+        .table-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; overflow: hidden; }
+        .table-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--card-border); }
+        .table-title { font-size: 0.95rem; font-weight: 500; }
+        .table-count { font-size: 0.78rem; color: var(--subtext); }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtext); padding: 0.75rem 1.25rem; text-align: left; border-bottom: 1px solid var(--card-border); white-space: nowrap; }
+        td { padding: 0.9rem 1.25rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); white-space: nowrap; }
+        [data-theme="light"] td { border-bottom: 1px solid rgba(0,0,0,0.04); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--hover); }
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem; border-radius: 100px; font-size: 0.72rem; font-weight: 500; }
+        .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+        .badge.paid { background: rgba(16,185,129,0.15); color: #10B981; }
+        .badge.paid .badge-dot { background: #10B981; }
+        .badge.pending { background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .badge.pending .badge-dot { background: #F59E0B; }
+        .badge.cancelled { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .badge.cancelled .badge-dot { background: #EF4444; }
+        .action-btn { background: none; border: 1px solid var(--card-border); color: var(--subtext); padding: 0.3rem 0.65rem; border-radius: 8px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; text-decoration: none; display: inline-block; }
+        .action-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(255,56,92,0.08); }
+        .action-btn.success-btn:hover { border-color: var(--success); color: var(--success); background: rgba(16,185,129,0.08); }
+        .action-btn.blocked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+        .cancelled-note { font-size: 0.7rem; color: var(--danger); font-style: italic; }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--subtext); }
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; } .mobile-toggle { display: flex; } .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item active"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="help.html" class="nav-item"><span class="nav-icon">❓</span> Help</a>
+        <a href="settings.html" class="nav-item" id="settingsNavItem"><span class="nav-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div><div class="user-name" id="userName">Admin</div><div class="user-role">Staff Portal</div></div>
+        </div>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div><div class="topbar-title">Billing</div><div class="topbar-sub">All generated invoices</div></div>
+        <div class="topbar-actions"><button class="btn-icon" id="themeBtn">🌙</button></div>
+    </div>
+    <div class="content">
+        <div class="stats-row">
+            <div class="mini-stat"><div class="mini-stat-val" id="statTotal">—</div><div class="mini-stat-label">Total Bills</div></div>
+            <div class="mini-stat"><div class="mini-stat-val" style="color:var(--success)" id="statPaid">—</div><div class="mini-stat-label">Paid</div></div>
+            <div class="mini-stat"><div class="mini-stat-val" style="color:var(--warning)" id="statPending">—</div><div class="mini-stat-label">Pending</div></div>
+            <div class="mini-stat"><div class="mini-stat-val" style="color:var(--primary);font-size:1.4rem;" id="statRevenue">—</div><div class="mini-stat-label">Revenue (LKR)</div></div>
+        </div>
+        <div class="filter-bar">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by guest name or bill ID..."/>
+            </div>
+            <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+        <div class="table-card">
+            <div class="table-header">
+                <div class="table-title">All Bills</div>
+                <div class="table-count" id="tableCount">Loading...</div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr><th>Bill #</th><th>Reservation</th><th>Guest</th><th>Room</th><th>Nights</th><th>Total</th><th>Generated</th><th>Res. Status</th><th>Bill Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--subtext);">Loading bills...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    let allBills = [], filtered = [];
+
+    async function loadBills() {
+      try {
+        // Load reservations first to get status info
+        const [resRes, billRes] = await Promise.all([
+          fetch('/api/reservations', { headers: { 'Authorization': 'Bearer ' + token } }),
+          fetch('/api/bills', { headers: { 'Authorization': 'Bearer ' + token } })
+        ]);
+        const resData = await resRes.json();
+        const billData = await billRes.json();
+
+        if (!billData.success) return;
+
+        // Build a reservation status map
+        const resMap = {};
+        if (resData.success) resData.data.forEach(r => { resMap[r.reservationId] = r.status; });
+
+        // Attach reservation status to each bill
+        allBills = billData.data.map(b => ({
+          ...b,
+          reservationStatus: resMap[b.reservationId] || 'CONFIRMED'
+        }));
+
+        updateStats();
+        applyFilters();
+      } catch(e) {
+        document.getElementById('tableBody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--danger);">Failed to load bills.</td></tr>';
+      }
+    }
+
+    function updateStats() {
+      const paid = allBills.filter(b => b.isPaid);
+      const pending = allBills.filter(b => !b.isPaid);
+      const revenue = paid.reduce((s,b) => s+b.totalAmount, 0);
+      document.getElementById('statTotal').textContent = allBills.length;
+      document.getElementById('statPaid').textContent = paid.length;
+      document.getElementById('statPending').textContent = pending.length;
+      document.getElementById('statRevenue').textContent = revenue.toLocaleString();
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      filtered = allBills.filter(b => {
+        const ms = !search || b.guestName.toLowerCase().includes(search) || String(b.billId).includes(search) || String(b.reservationId).includes(search);
+        const mst = !status || (status==='paid'&&b.isPaid) || (status==='pending'&&!b.isPaid);
+        return ms && mst;
+      });
+      document.getElementById('tableCount').textContent = `${filtered.length} bill${filtered.length!==1?'s':''}`;
+      renderTable();
+    }
+
+    function renderTable() {
+      if (!filtered.length) { document.getElementById('tableBody').innerHTML = '<tr><td colspan="10"><div class="empty-state">🧾<br>No bills found</div></td></tr>'; return; }
+
+      document.getElementById('tableBody').innerHTML = filtered.map(b => {
+        const isCancelled = b.reservationStatus === 'CANCELLED';
+        const canPay = !b.isPaid && !isCancelled;
+
+        // Mark Paid button logic
+        let payBtn = '';
+        if (!b.isPaid) {
+          if (isCancelled) {
+            payBtn = `<span class="action-btn blocked" title="Cannot mark cancelled reservation as paid">Mark Paid</span>`;
+          } else {
+            payBtn = `<button class="action-btn success-btn" onclick="markPaid(${b.billId})">Mark Paid</button>`;
+          }
+        }
+
+        return `<tr>
+          <td><strong>#${String(b.billId).padStart(6,'0')}</strong></td>
+          <td><a href="reservation-detail.html?id=${b.reservationId}" style="color:var(--primary);text-decoration:none;">#${String(b.reservationId).padStart(4,'0')}</a></td>
+          <td>${b.guestName}</td>
+          <td>Room ${b.roomNumber} <span style="color:var(--subtext);font-size:0.75rem;">${b.roomType}</span></td>
+          <td>${b.numberOfNights} night${b.numberOfNights!==1?'s':''}</td>
+          <td><strong>LKR ${b.totalAmount.toLocaleString()}</strong></td>
+          <td>${b.generatedDate ? new Date(b.generatedDate).toLocaleDateString() : '—'}</td>
+          <td>
+            <span class="badge ${isCancelled?'cancelled':'paid'}" style="${!isCancelled?'display:none':''}">
+              <span class="badge-dot"></span>Cancelled
+            </span>
+            ${!isCancelled?'<span style="color:var(--success);font-size:0.75rem;">✓ Active</span>':''}
+          </td>
+          <td>
+            <span class="badge ${b.isPaid?'paid':'pending'}">
+              <span class="badge-dot"></span>${b.isPaid?'Paid':'Pending'}
+            </span>
+            ${isCancelled&&!b.isPaid?'<div class="cancelled-note">Blocked</div>':''}
+          </td>
+          <td style="display:flex;gap:0.4rem;align-items:center;">
+            <a href="bill.html?id=${b.reservationId}" class="action-btn">View</a>
+            ${payBtn}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function markPaid(billId) {
+      try {
+        const res = await fetch(`/api/bills/${billId}/pay`, { method:'PUT', headers:{'Authorization':'Bearer '+token} });
+        const data = await res.json();
+        if (data.success) loadBills();
+        else alert(data.message||'Failed to mark as paid.');
+      } catch(e) { alert('Server error.'); }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+    document.getElementById('mobileToggle').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+    document.getElementById('sidebarOverlay').addEventListener('click',()=>{ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+    document.getElementById('logoutBtn').addEventListener('click',async()=>{ await fetch('/api/auth/logout',{method:'POST',headers:{'Authorization':'Bearer '+token}}); localStorage.clear(); window.location.href='login.html'; });
+
+    loadBills();
+</script>
+</body>
+</html>

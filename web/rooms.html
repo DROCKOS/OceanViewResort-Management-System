@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Rooms — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --primary-hover: #E31C5F;
+          --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55); --hover: rgba(255,255,255,0.08);
+          --input-bg: rgba(255,255,255,0.07); --input-border: rgba(255,255,255,0.15);
+          --success: #10B981; --danger: #EF4444;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55); --hover: rgba(0,0,0,0.05);
+          --input-bg: rgba(255,255,255,0.8); --input-border: rgba(0,0,0,0.15);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; }
+        .topbar-sub { font-size: 0.78rem; color: var(--subtext); margin-top: 0.1rem; }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+        .btn-primary { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: var(--primary); border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; box-shadow: 0 4px 12px rgba(255,56,92,0.3); }
+        .content { padding: 2rem; }
+        .stats-row { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .mini-stat { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1rem 1.5rem; flex: 1; min-width: 130px; }
+        .mini-stat-val { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; line-height: 1; }
+        .mini-stat-label { font-size: 0.72rem; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.3rem; }
+        .rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .room-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; overflow: hidden; transition: all 0.3s; }
+        .room-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
+        .room-visual { height: 160px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; }
+        .room-visual.standard { background: linear-gradient(135deg, #1a2a3a, #2d4a6b); }
+        .room-visual.deluxe   { background: linear-gradient(135deg, #1a3a2a, #2d6b4a); }
+        .room-visual.suite    { background: linear-gradient(135deg, #3a1a2a, #6b2d4a); }
+        .room-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .room-visual .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55), transparent); }
+        .room-status-badge { position: absolute; top: 0.75rem; right: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.7rem; font-weight: 600; display: flex; align-items: center; gap: 0.3rem; z-index: 2; backdrop-filter: blur(8px); }
+        .room-status-badge.available   { background: rgba(16,185,129,0.25); color: #10B981; border: 1px solid rgba(16,185,129,0.4); }
+        .room-status-badge.unavailable { background: rgba(239,68,68,0.25);  color: #EF4444; border: 1px solid rgba(239,68,68,0.4); }
+        .status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+        .room-info { padding: 1.25rem; }
+        .room-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem; }
+        .room-name   { font-size: 1rem; font-weight: 500; }
+        .room-number { font-size: 0.75rem; color: var(--subtext); background: var(--hover); padding: 0.2rem 0.6rem; border-radius: 6px; }
+        .room-desc   { font-size: 0.8rem; color: var(--subtext); line-height: 1.5; margin-bottom: 0.75rem; }
+        .room-meta   { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+        .room-meta-pill { font-size: 0.7rem; color: var(--subtext); background: var(--hover); border: 1px solid var(--card-border); padding: 0.2rem 0.55rem; border-radius: 100px; }
+        .room-price  { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
+        .room-price span { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: var(--subtext); font-weight: 400; }
+        .room-actions { display: flex; gap: 0.5rem; }
+        .btn-edit   { flex: 1; padding: 0.5rem; border-radius: 10px; background: var(--hover); border: 1px solid var(--card-border); color: var(--subtext); font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+        .btn-edit:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-toggle { flex: 1; padding: 0.5rem; border-radius: 10px; border: 1px solid; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+        .btn-toggle.make-unavailable { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #EF4444; }
+        .btn-toggle.make-available   { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10B981; }
+        .btn-delete { flex: 0 0 auto; padding: 0.5rem 0.65rem; border-radius: 10px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: #EF4444; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+        .btn-delete:hover { background: rgba(239,68,68,0.2); }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        .modal-overlay.show { display: flex; }
+        .modal { background: #1a1a2e; border: 1px solid var(--card-border); border-radius: 24px; padding: 2rem; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; }
+        [data-theme="light"] .modal { background: white; }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+        .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 0.3rem; }
+        .modal-sub   { font-size: 0.825rem; color: var(--subtext); margin-bottom: 1.25rem; }
+        .section-divider { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtext); margin: 1.1rem 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--card-border); }
+        .form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .form-group { margin-bottom: 0.9rem; }
+        .form-label { display: block; font-size: 0.7rem; font-weight: 500; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.35rem; }
+        .form-label span { color: var(--primary); }
+        .form-input, .form-select { width: 100%; padding: 0.7rem 1rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; outline: none; transition: border 0.3s; }
+        .form-input::placeholder { color: var(--subtext); }
+        .form-input:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,56,92,0.12); }
+        .form-select option { background: #1a1a2e; color: white; }
+        .upload-area { border: 2px dashed var(--input-border); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+        .upload-area:hover { border-color: var(--primary); background: rgba(255,56,92,0.04); }
+        .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        .upload-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+        .upload-text { font-size: 0.825rem; color: var(--subtext); }
+        .upload-text strong { color: var(--primary); }
+        .upload-hint { font-size: 0.7rem; color: var(--subtext); margin-top: 0.25rem; }
+        .img-preview { width: 100%; height: 130px; border-radius: 12px; object-fit: cover; margin-top: 0.75rem; border: 1px solid var(--card-border); display: none; }
+        .img-preview.show { display: block; }
+        .img-clear { display: none; margin-top: 0.5rem; font-size: 0.75rem; color: var(--danger); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+        .img-clear.show { display: inline-block; }
+        .confirm-modal { background: #1a1a2e; border: 1px solid rgba(239,68,68,0.3); border-radius: 20px; padding: 1.75rem; max-width: 380px; width: 90%; animation: modalIn 0.3s ease; }
+        [data-theme="light"] .confirm-modal { background: white; }
+        .confirm-title { font-size: 1.1rem; font-weight: 600; color: var(--danger); margin-bottom: 0.5rem; }
+        .confirm-body  { font-size: 0.875rem; color: var(--subtext); margin-bottom: 1.25rem; line-height: 1.5; }
+        .confirm-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem; }
+        .btn-cancel-modal { padding: 0.65rem 1.3rem; border-radius: 12px; background: var(--hover); border: 1px solid var(--card-border); color: var(--subtext); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; }
+        .btn-save-modal   { padding: 0.65rem 1.3rem; border-radius: 12px; background: var(--primary); border: none; color: white; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; }
+        .btn-save-modal:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-danger-modal { padding: 0.65rem 1.3rem; border-radius: 12px; background: var(--danger); border: none; color: white; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; }
+        .alert { padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.825rem; margin-bottom: 1rem; display: none; }
+        .alert.error         { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);  color: #EF4444; display: block; }
+        .alert.success-alert { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #10B981; display: block; }
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; } .mobile-toggle { display: flex; } .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; } .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item active"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="help.html" class="nav-item"><span class="nav-icon">❓</span> Help</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div><div class="user-name" id="userName">Admin</div><div class="user-role" id="userRoleLabel">Staff Portal</div></div>
+        </div>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div>
+            <div class="topbar-title">Room Management</div>
+            <div class="topbar-sub">Manage all resort rooms</div>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn-icon" id="themeBtn">🌙</button>
+            <button class="btn-primary" onclick="openAddModal()">＋ Add Room</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="stats-row">
+            <div class="mini-stat"><div class="mini-stat-val" id="statTotal">—</div><div class="mini-stat-label">Total Rooms</div></div>
+            <div class="mini-stat"><div class="mini-stat-val" style="color:var(--success)" id="statAvailable">—</div><div class="mini-stat-label">Available</div></div>
+            <div class="mini-stat"><div class="mini-stat-val" style="color:var(--danger)" id="statUnavailable">—</div><div class="mini-stat-label">Unavailable</div></div>
+        </div>
+        <div id="toast" class="alert" style="margin-bottom:1.5rem;"></div>
+        <div class="rooms-grid" id="roomsGrid">
+            <div style="color:var(--subtext);padding:2rem;">Loading rooms...</div>
+        </div>
+    </div>
+</main>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="roomModal">
+    <div class="modal">
+        <div class="modal-title" id="modalTitle">Add New Room</div>
+        <div class="modal-sub"   id="modalSub">Fill in all details for the room.</div>
+        <div id="modalAlert" class="alert"></div>
+
+        <div class="section-divider">Basic Info</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Room Number <span>*</span></label>
+                <input type="text" id="fRoomNumber" class="form-input" placeholder="e.g. 401"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Room Type <span>*</span></label>
+                <select id="fRoomType" class="form-select">
+                    <option value="">Select...</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Deluxe">Deluxe</option>
+                    <option value="Suite">Suite</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Price Per Night (LKR) <span>*</span></label>
+            <input type="number" id="fPrice" class="form-input" placeholder="e.g. 15000"/>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            <input type="text" id="fDescription" class="form-input" placeholder="Short room description"/>
+        </div>
+
+        <div class="section-divider">Room Details</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Room Size</label>
+                <input type="text" id="fRoomSize" class="form-input" placeholder="e.g. 35 m²"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Number of Beds</label>
+                <select id="fNumBeds" class="form-select">
+                    <option value="1">1 Bed</option>
+                    <option value="2">2 Beds</option>
+                    <option value="3">3 Beds</option>
+                    <option value="4">4 Beds</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Max Persons</label>
+                <select id="fMaxPersons" class="form-select">
+                    <option value="1">1 Person</option>
+                    <option value="2">2 Persons</option>
+                    <option value="3">3 Persons</option>
+                    <option value="4">4 Persons</option>
+                    <option value="5">5 Persons</option>
+                    <option value="6">6 Persons</option>
+                </select>
+            </div>
+            <div class="form-group" id="availabilityGroup" style="display:none;">
+                <label class="form-label">Availability</label>
+                <select id="fAvailable" class="form-select">
+                    <option value="true">Available</option>
+                    <option value="false">Unavailable</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section-divider">Room Photo</div>
+        <div class="form-group">
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="fImageFile" accept="image/*" onchange="handleImageUpload(event)"/>
+                <div class="upload-icon">🖼️</div>
+                <div class="upload-text"><strong>Click to upload</strong> or drag and drop</div>
+                <div class="upload-hint">JPG, PNG, WEBP — max 2MB</div>
+            </div>
+            <img id="imgPreview" class="img-preview" alt="Preview"/>
+            <button class="img-clear" id="imgClearBtn" onclick="clearImage()">✕ Remove photo</button>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel-modal" onclick="closeModal()">Cancel</button>
+            <button class="btn-save-modal" id="saveRoomBtn" onclick="saveRoom()">Add Room</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="confirm-modal">
+        <div class="confirm-title">🗑️ Delete Room?</div>
+        <div class="confirm-body" id="deleteBody">This will permanently delete the room and cannot be undone.</div>
+        <div class="confirm-actions">
+            <button class="btn-cancel-modal" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-danger-modal" id="confirmDeleteBtn" onclick="confirmDelete()">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    // ── Read user info from localStorage (set by app.js after login) ──────
+    const username = localStorage.getItem('username') || 'Admin';
+    const userRole = localStorage.getItem('role') || 'STAFF';
+    const isAdmin  = userRole.toUpperCase() === 'ADMIN';
+
+    document.getElementById('userName').textContent    = username;
+    document.getElementById('userAvatar').textContent  = username.charAt(0).toUpperCase();
+    document.getElementById('userRoleLabel').textContent = isAdmin ? 'Administrator' : 'Staff';
+
+    let rooms = [];
+    let editingRoomId    = null;
+    let deletingRoomId   = null;
+    let uploadedImageBase64 = null;
+
+    const icons   = { Standard: '🏨', Deluxe: '🌅', Suite: '👑' };
+    const visuals = { Standard: 'standard', Deluxe: 'deluxe', Suite: 'suite' };
+
+    // ── Image upload ──────────────────────────────────────────────────────
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            showModalAlert('Image is too large. Please use an image under 2MB.', 'error');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            uploadedImageBase64 = e.target.result;
+            document.getElementById('imgPreview').src = uploadedImageBase64;
+            document.getElementById('imgPreview').classList.add('show');
+            document.getElementById('imgClearBtn').classList.add('show');
+            document.getElementById('uploadArea').style.borderColor = 'var(--success)';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearImage() {
+        uploadedImageBase64 = null;
+        document.getElementById('fImageFile').value = '';
+        document.getElementById('imgPreview').src = '';
+        document.getElementById('imgPreview').classList.remove('show');
+        document.getElementById('imgClearBtn').classList.remove('show');
+        document.getElementById('uploadArea').style.borderColor = '';
+    }
+
+    // ── Load & render rooms ───────────────────────────────────────────────
+    async function loadRooms() {
+        try {
+            const res  = await fetch('/api/rooms', { headers: { 'Authorization': 'Bearer ' + token } });
+            const data = await res.json();
+            if (data.success) { rooms = data.data; renderRooms(); updateStats(); }
+        } catch(e) {
+            document.getElementById('roomsGrid').innerHTML = '<div style="color:var(--danger);">Failed to load rooms.</div>';
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('statTotal').textContent       = rooms.length;
+        document.getElementById('statAvailable').textContent   = rooms.filter(r => r.isAvailable).length;
+        document.getElementById('statUnavailable').textContent = rooms.filter(r => !r.isAvailable).length;
+    }
+
+    function renderRooms() {
+        if (rooms.length === 0) {
+            document.getElementById('roomsGrid').innerHTML =
+                '<div style="color:var(--subtext);font-size:0.875rem;">No rooms yet. Add your first room!</div>';
+            return;
+        }
+        document.getElementById('roomsGrid').innerHTML = rooms.map(r => {
+            const hasImg  = r.imageUrl && r.imageUrl.trim();
+            const beds    = r.numBeds    || 1;
+            const persons = r.maxPersons || 2;
+            // Delete button only visible to ADMIN
+            const deleteBtn = isAdmin
+                ? `<button class="btn-delete" onclick="openDeleteModal(${r.roomId})" title="Delete room">🗑️</button>`
+                : '';
+            return `
+            <div class="room-card">
+                <div class="room-visual ${visuals[r.roomType] || 'standard'}">
+                    ${hasImg
+                        ? `<img src="${r.imageUrl}" alt="Room ${r.roomNumber}" onerror="this.style.display='none'"/>
+                           <div class="overlay"></div>`
+                        : `<span style="position:relative;z-index:1;">${icons[r.roomType] || '🏨'}</span>`}
+                    <div class="room-status-badge ${r.isAvailable ? 'available' : 'unavailable'}">
+                        <span class="status-dot"></span>${r.isAvailable ? 'Available' : 'Unavailable'}
+                    </div>
+                </div>
+                <div class="room-info">
+                    <div class="room-header">
+                        <div class="room-name">${r.roomType} Room</div>
+                        <div class="room-number">Room ${r.roomNumber}</div>
+                    </div>
+                    <div class="room-desc">${r.description || 'No description provided.'}</div>
+                    <div class="room-meta">
+                        ${r.roomSize ? `<div class="room-meta-pill">📐 ${r.roomSize}</div>` : ''}
+                        <div class="room-meta-pill">🛏️ ${beds} bed${beds > 1 ? 's' : ''}</div>
+                        <div class="room-meta-pill">👤 Max ${persons}</div>
+                    </div>
+                    <div class="room-price">LKR ${r.pricePerNight.toLocaleString()} <span>/ night</span></div>
+                    <div class="room-actions">
+                        <button class="btn-edit" onclick="openEditModal(${r.roomId})">✏️ Edit</button>
+                        <button class="btn-toggle ${r.isAvailable ? 'make-unavailable' : 'make-available'}" onclick="toggleAvailability(${r.roomId}, ${r.isAvailable})">
+                            ${r.isAvailable ? '🔒 Unavailable' : '✓ Available'}
+                        </button>
+                        ${deleteBtn}
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── Toggle availability ───────────────────────────────────────────────
+    async function toggleAvailability(roomId, current) {
+        const r = rooms.find(x => x.roomId === roomId);
+        if (!r) return;
+        try {
+            const res = await fetch(`/api/rooms/${roomId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({
+                    roomType: r.roomType, pricePerNight: r.pricePerNight,
+                    description: r.description || '', isAvailable: !current,
+                    roomSize: r.roomSize || '', numBeds: r.numBeds || 1,
+                    maxPersons: r.maxPersons || 2, imageUrl: r.imageUrl || ''
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(`Room ${r.roomNumber} is now ${!current ? 'available' : 'unavailable'}.`, 'success-alert');
+                loadRooms();
+            } else showToast(data.message || 'Failed to update.', 'error');
+        } catch(e) { showToast('Server error.', 'error'); }
+    }
+
+    // ── Delete ────────────────────────────────────────────────────────────
+    function openDeleteModal(roomId) {
+        deletingRoomId = roomId;
+        const r = rooms.find(x => x.roomId === roomId);
+        document.getElementById('deleteBody').textContent =
+            `Are you sure you want to permanently delete Room ${r ? r.roomNumber : ''} (${r ? r.roomType : ''})? This cannot be undone.`;
+        document.getElementById('deleteModal').classList.add('show');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('show');
+        deletingRoomId = null;
+    }
+
+    async function confirmDelete() {
+        if (!deletingRoomId) return;
+        const btn = document.getElementById('confirmDeleteBtn');
+        btn.disabled = true; btn.textContent = 'Deleting...';
+        try {
+            const res  = await fetch(`/api/rooms/${deletingRoomId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            if (data.success) {
+                closeDeleteModal();
+                showToast('Room deleted successfully.', 'success-alert');
+                loadRooms();
+            } else {
+                closeDeleteModal();
+                showToast(data.message || 'Failed to delete room.', 'error');
+            }
+        } catch(e) {
+            closeDeleteModal();
+            showToast('Server error. Please try again.', 'error');
+        }
+        btn.disabled = false; btn.textContent = 'Yes, Delete';
+    }
+
+    // ── Add modal ─────────────────────────────────────────────────────────
+    function openAddModal() {
+        editingRoomId = null;
+        document.getElementById('modalTitle').textContent = 'Add New Room';
+        document.getElementById('modalSub').textContent   = 'Fill in all details for the room.';
+        ['fRoomNumber','fRoomType','fPrice','fDescription','fRoomSize'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('fRoomNumber').disabled = false;
+        document.getElementById('fNumBeds').value    = '1';
+        document.getElementById('fMaxPersons').value = '2';
+        document.getElementById('availabilityGroup').style.display = 'none';
+        document.getElementById('modalAlert').className = 'alert';
+        document.getElementById('saveRoomBtn').textContent = 'Add Room';
+        clearImage();
+        document.getElementById('roomModal').classList.add('show');
+    }
+
+    // ── Edit modal ────────────────────────────────────────────────────────
+    function openEditModal(roomId) {
+        editingRoomId = roomId;
+        const r = rooms.find(x => x.roomId === roomId);
+        if (!r) return;
+        document.getElementById('modalTitle').textContent  = 'Edit Room ' + r.roomNumber;
+        document.getElementById('modalSub').textContent    = 'Update the room details below.';
+        document.getElementById('fRoomNumber').value       = r.roomNumber;
+        document.getElementById('fRoomNumber').disabled    = true;
+        document.getElementById('fRoomType').value         = r.roomType;
+        document.getElementById('fPrice').value            = r.pricePerNight;
+        document.getElementById('fDescription').value      = r.description || '';
+        document.getElementById('fRoomSize').value         = r.roomSize || '';
+        document.getElementById('fNumBeds').value          = r.numBeds || '1';
+        document.getElementById('fMaxPersons').value       = r.maxPersons || '2';
+        document.getElementById('fAvailable').value        = r.isAvailable.toString();
+        document.getElementById('availabilityGroup').style.display = 'block';
+        document.getElementById('modalAlert').className    = 'alert';
+        document.getElementById('saveRoomBtn').textContent = 'Save Changes';
+
+        clearImage();
+        if (r.imageUrl && r.imageUrl.trim()) {
+            uploadedImageBase64 = r.imageUrl;
+            document.getElementById('imgPreview').src = r.imageUrl;
+            document.getElementById('imgPreview').classList.add('show');
+            document.getElementById('imgClearBtn').classList.add('show');
+            document.getElementById('uploadArea').style.borderColor = 'var(--success)';
+        }
+        document.getElementById('roomModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('roomModal').classList.remove('show');
+        editingRoomId = null;
+    }
+
+    function showModalAlert(msg, type) {
+        const el = document.getElementById('modalAlert');
+        el.className = 'alert ' + type;
+        el.textContent = msg;
+    }
+
+    // ── Save room ─────────────────────────────────────────────────────────
+    async function saveRoom() {
+        const btn = document.getElementById('saveRoomBtn');
+        document.getElementById('modalAlert').className = 'alert';
+
+        const roomNumber  = document.getElementById('fRoomNumber').value.trim();
+        const roomType    = document.getElementById('fRoomType').value;
+        const price       = parseFloat(document.getElementById('fPrice').value);
+        const description = document.getElementById('fDescription').value.trim();
+        const roomSize    = document.getElementById('fRoomSize').value.trim();
+        const numBeds     = parseInt(document.getElementById('fNumBeds').value);
+        const maxPersons  = parseInt(document.getElementById('fMaxPersons').value);
+        const isAvailable = document.getElementById('fAvailable').value === 'true';
+        const imageUrl    = uploadedImageBase64 || '';
+
+        if (!roomType)                      { showModalAlert('Please select a room type.', 'error'); return; }
+        if (!price || price <= 0)           { showModalAlert('Please enter a valid price.', 'error'); return; }
+        if (!editingRoomId && !roomNumber)  { showModalAlert('Please enter a room number.', 'error'); return; }
+
+        btn.disabled = true; btn.textContent = 'Saving...';
+        try {
+            const url    = editingRoomId ? `/api/rooms/${editingRoomId}` : '/api/rooms';
+            const method = editingRoomId ? 'PUT' : 'POST';
+            const body   = editingRoomId
+                ? { roomType, pricePerNight: price, description, isAvailable, roomSize, numBeds, maxPersons, imageUrl }
+                : { roomNumber, roomType, pricePerNight: price, description, roomSize, numBeds, maxPersons, imageUrl };
+
+            const res  = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            if (data.success) {
+                closeModal();
+                showToast(editingRoomId ? 'Room updated successfully!' : 'Room added successfully!', 'success-alert');
+                loadRooms();
+            } else {
+                showModalAlert(data.message || 'Failed to save.', 'error');
+            }
+        } catch(e) {
+            showModalAlert('Server error. Please try again.', 'error');
+        }
+        btn.disabled = false;
+        btn.textContent = editingRoomId ? 'Save Changes' : 'Add Room';
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────
+    function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.className = 'alert ' + type;
+        el.textContent = msg;
+        setTimeout(() => { el.className = 'alert'; }, 3500);
+    }
+
+    // ── UI events ─────────────────────────────────────────────────────────
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sidebarOverlay').classList.toggle('show');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+        localStorage.clear();
+        window.location.href = 'login.html';
+    });
+    document.getElementById('roomModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('roomModal')) closeModal();
+    });
+    document.getElementById('deleteModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('deleteModal')) closeDeleteModal();
+    });
+
+    loadRooms();
+</script>
+</body>
+</html>

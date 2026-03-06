@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --primary-hover: #E31C5F;
+          --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55);
+          --hover: rgba(255,255,255,0.08);
+          --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55);
+          --hover: rgba(0,0,0,0.05);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-left .greeting { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--text); }
+        .topbar-left .date-str { font-size: 0.78rem; color: var(--subtext); margin-top: 0.1rem; }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; text-decoration: none; }
+        .btn-icon:hover { background: var(--hover); }
+        .btn-primary { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: var(--primary); border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(255,56,92,0.3); text-decoration: none; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+        .content { padding: 2rem; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 1.25rem; transition: all 0.3s; }
+        .stat-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .stat-label { font-size: 0.72rem; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.07em; }
+        .stat-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--text); line-height: 1; }
+        .stat-sub { font-size: 0.72rem; color: var(--subtext); margin-top: 0.3rem; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 360px; gap: 1.5rem; margin-bottom: 1.5rem; }
+
+        /* CALENDAR */
+        .calendar-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 1.5rem; }
+        .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+        .cal-month { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--text); }
+        .cal-nav { display: flex; gap: 0.5rem; }
+        .cal-nav-btn { width: 32px; height: 32px; border-radius: 8px; background: var(--hover); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; transition: all 0.2s; }
+        .cal-nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
+        .cal-weekday { text-align: center; font-size: 0.68rem; font-weight: 500; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.3rem 0; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+        .cal-day { min-height: 62px; border-radius: 10px; padding: 0.4rem; cursor: pointer; transition: all 0.2s; position: relative; border: 1px solid transparent; }
+        .cal-day:hover { background: var(--hover); border-color: var(--card-border); }
+        .cal-day.empty { cursor: default; pointer-events: none; }
+        .cal-day.today .day-num { background: var(--primary); color: white; border-radius: 50%; }
+        .cal-day.has-checkin { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); }
+        .cal-day.has-checkout { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); }
+        .cal-day.has-stay { background: rgba(255,56,92,0.06); border-color: rgba(255,56,92,0.12); }
+        .day-num { font-size: 0.825rem; font-weight: 500; color: var(--text); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.2rem; }
+        .day-events { display: flex; flex-direction: column; gap: 2px; }
+        .day-event { font-size: 0.6rem; padding: 0.12rem 0.3rem; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+        .day-event.checkin { background: rgba(16,185,129,0.2); color: #10B981; }
+        .day-event.checkout { background: rgba(239,68,68,0.2); color: #EF4444; }
+        .day-event.stay { background: rgba(255,56,92,0.15); color: #FF385C; }
+        .cal-legend { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--subtext); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+        /* DAY POPUP */
+        .day-popup { display: none; position: fixed; z-index: 300; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 1.25rem; width: 280px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        [data-theme="light"] .day-popup { background: white; border-color: rgba(0,0,0,0.12); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .day-popup-date { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--text); margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); }
+        .day-popup-item { padding: 0.6rem 0.75rem; border-radius: 10px; margin-bottom: 0.4rem; font-size: 0.8rem; }
+        .day-popup-item:last-child { margin-bottom: 0; }
+        .day-popup-item .item-name { font-weight: 500; color: var(--text); }
+        .day-popup-item .item-detail { color: var(--subtext); font-size: 0.72rem; margin-top: 0.15rem; }
+        .day-popup-close { position: absolute; top: 0.75rem; right: 0.75rem; background: var(--hover); border: none; color: var(--subtext); width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; }
+
+        /* QUICK ACTIONS */
+        .quick-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 1.5rem; }
+        .section-title { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        .quick-btn { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; padding: 1rem 0.5rem; border-radius: 14px; background: var(--hover); border: 1px solid var(--card-border); color: var(--subtext); font-size: 0.75rem; cursor: pointer; transition: all 0.25s; text-decoration: none; text-align: center; }
+        .quick-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(255,56,92,0.08); transform: translateY(-2px); }
+        .quick-btn-icon { font-size: 1.4rem; }
+
+        /* TABLE */
+        .table-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; overflow: hidden; }
+        .table-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--card-border); }
+        .table-title { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+        .view-all { font-size: 0.78rem; color: var(--primary); text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtext); padding: 0.7rem 1.25rem; text-align: left; border-bottom: 1px solid var(--card-border); }
+        td { padding: 0.85rem 1.25rem; font-size: 0.825rem; color: var(--text); border-bottom: 1px solid rgba(255,255,255,0.04); }
+        [data-theme="light"] td { border-bottom: 1px solid rgba(0,0,0,0.04); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--hover); }
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 100px; font-size: 0.7rem; font-weight: 500; }
+        .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+        .badge.confirmed { background: rgba(16,185,129,0.15); color: #10B981; }
+        .badge.confirmed .badge-dot { background: #10B981; }
+        .badge.cancelled { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .badge.cancelled .badge-dot { background: #EF4444; }
+        .action-link { color: var(--primary); text-decoration: none; font-size: 0.78rem; }
+
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2,1fr); } .two-col { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; } .mobile-toggle { display: flex; } .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; } .stats-grid { grid-template-columns: repeat(2,1fr); }
+        }
+        @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item active"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="help.html" class="nav-item"><span class="nav-icon">❓</span> Help</a>
+        <a href="settings.html" class="nav-item" id="settingsNavItem"><span class="nav-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div>
+                <div class="user-name" id="userName">Admin</div>
+                <div class="user-role">Staff Portal</div>
+            </div>
+        </div>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="greeting" id="greeting">Good morning</div>
+            <div class="date-str" id="dateStr"></div>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn-icon" id="themeBtn">🌙</button>
+            <a href="add-reservation.html" class="btn-primary">＋ New Reservation</a>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Total Reservations</span><div class="stat-icon" style="background:rgba(255,56,92,0.12);">📋</div></div>
+                <div class="stat-value" id="statTotal">—</div>
+                <div class="stat-sub">All time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Active Bookings</span><div class="stat-icon" style="background:rgba(16,185,129,0.12);">✅</div></div>
+                <div class="stat-value" id="statActive" style="color:var(--success);">—</div>
+                <div class="stat-sub">Confirmed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Available Rooms</span><div class="stat-icon" style="background:rgba(59,130,246,0.12);">🏨</div></div>
+                <div class="stat-value" id="statRooms" style="color:#3B82F6;">—</div>
+                <div class="stat-sub">Right now</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><span class="stat-label">Revenue</span><div class="stat-icon" style="background:rgba(245,158,11,0.12);">💰</div></div>
+                <div class="stat-value" id="statRevenue" style="color:var(--warning);font-size:1.5rem;">—</div>
+                <div class="stat-sub">Total paid (LKR)</div>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <!-- CALENDAR -->
+            <div class="calendar-card">
+                <div class="cal-header">
+                    <div class="cal-month" id="calMonthTitle">Loading...</div>
+                    <div class="cal-nav">
+                        <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+                        <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+                    </div>
+                </div>
+                <div class="cal-weekdays">
+                    <div class="cal-weekday">Mon</div><div class="cal-weekday">Tue</div>
+                    <div class="cal-weekday">Wed</div><div class="cal-weekday">Thu</div>
+                    <div class="cal-weekday">Fri</div><div class="cal-weekday">Sat</div>
+                    <div class="cal-weekday">Sun</div>
+                </div>
+                <div class="cal-grid" id="calGrid"></div>
+                <div class="cal-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#10B981;"></div> Check-in</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div> Check-out</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#FF385C;"></div> Staying</div>
+                </div>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="quick-card">
+                <div class="section-title">Quick Actions</div>
+                <div class="quick-grid">
+                    <a href="add-reservation.html" class="quick-btn"><div class="quick-btn-icon">📋</div>New Reservation</a>
+                    <a href="reservations.html" class="quick-btn"><div class="quick-btn-icon">🔍</div>View All</a>
+                    <a href="bills.html" class="quick-btn"><div class="quick-btn-icon">🧾</div>Billing</a>
+                    <a href="reports.html" class="quick-btn"><div class="quick-btn-icon">📈</div>Reports</a>
+                    <a href="rooms.html" class="quick-btn"><div class="quick-btn-icon">🏨</div>Rooms</a>
+                    <a href="audit.html" class="quick-btn"><div class="quick-btn-icon">🔐</div>Audit</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECENT RESERVATIONS -->
+        <div class="table-card">
+            <div class="table-header">
+                <div class="table-title">Recent Reservations</div>
+                <a href="reservations.html" class="view-all">View all →</a>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>#ID</th><th>Guest</th><th>Room</th>
+                    <th>Check In</th><th>Check Out</th><th>Status</th><th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="recentTable">
+                <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--subtext);">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<!-- DAY POPUP -->
+<div class="day-popup" id="dayPopup">
+    <button class="day-popup-close" onclick="closePopup()">✕</button>
+    <div class="day-popup-date" id="popupDate"></div>
+    <div id="popupContent"></div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    const hour = new Date().getHours();
+    const uname = localStorage.getItem('username') || 'Admin';
+    document.getElementById('greeting').textContent =
+      'Good ' + (hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening') + ', ' + uname;
+    document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    // ── CALENDAR ─────────────────────────────────────────────
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+    let calReservations = [];
+    const MONTHS = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+
+    async function loadCalendar() {
+      try {
+        const res = await fetch('/api/reservations/calendar', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) calReservations = data.data;
+      } catch (e) {}
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      document.getElementById('calMonthTitle').textContent = MONTHS[calMonth] + ' ' + calYear;
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const offset = firstDay === 0 ? 6 : firstDay - 1;
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const today = new Date();
+
+      // Build event map
+      const eventMap = {};
+      calReservations.forEach(r => {
+        const ci = new Date(r.checkInDate + 'T00:00:00');
+        const co = new Date(r.checkOutDate + 'T00:00:00');
+
+        // Check-in day
+        if (!eventMap[r.checkInDate]) eventMap[r.checkInDate] = [];
+        eventMap[r.checkInDate].push({ type: 'checkin', res: r });
+
+        // Check-out day
+        if (!eventMap[r.checkOutDate]) eventMap[r.checkOutDate] = [];
+        eventMap[r.checkOutDate].push({ type: 'checkout', res: r });
+
+        // Days in between
+        let d = new Date(ci); d.setDate(d.getDate() + 1);
+        while (d < co) {
+          const k = d.toISOString().split('T')[0];
+          if (!eventMap[k]) eventMap[k] = [];
+          eventMap[k].push({ type: 'stay', res: r });
+          d.setDate(d.getDate() + 1);
+        }
+      });
+
+      const grid = document.getElementById('calGrid');
+      grid.innerHTML = '';
+
+      for (let i = 0; i < offset; i++) {
+        const el = document.createElement('div');
+        el.className = 'cal-day empty';
+        grid.appendChild(el);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        const isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===day;
+        const events = eventMap[dateStr] || [];
+
+        const cell = document.createElement('div');
+        cell.className = 'cal-day' + (isToday ? ' today' : '');
+
+        const hasCI = events.some(e => e.type==='checkin');
+        const hasCO = events.some(e => e.type==='checkout');
+        const hasStay = events.some(e => e.type==='stay');
+        if (hasCI) cell.classList.add('has-checkin');
+        else if (hasCO) cell.classList.add('has-checkout');
+        else if (hasStay) cell.classList.add('has-stay');
+
+        const numEl = document.createElement('div');
+        numEl.className = 'day-num';
+        numEl.textContent = day;
+        cell.appendChild(numEl);
+
+        if (events.length > 0) {
+          const evWrap = document.createElement('div');
+          evWrap.className = 'day-events';
+          events.slice(0, 2).forEach(ev => {
+            const el = document.createElement('div');
+            el.className = 'day-event ' + ev.type;
+            el.textContent = (ev.type==='checkin'?'→ ':ev.type==='checkout'?'← ':'· ') +
+                             ev.res.guestName.split(' ')[0];
+            evWrap.appendChild(el);
+          });
+          if (events.length > 2) {
+            const more = document.createElement('div');
+            more.className = 'day-event stay';
+            more.textContent = '+' + (events.length - 2) + ' more';
+            evWrap.appendChild(more);
+          }
+          cell.appendChild(evWrap);
+          cell.addEventListener('click', (e) => showDayPopup(e, dateStr, events));
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
+    function changeMonth(dir) {
+      calMonth += dir;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      if (calMonth < 0)  { calMonth = 11; calYear--; }
+      renderCalendar();
+    }
+
+    function showDayPopup(e, dateStr, events) {
+      const popup = document.getElementById('dayPopup');
+      document.getElementById('popupDate').textContent =
+        new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
+          weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+        });
+
+      const colors = { checkin:'#10B981', checkout:'#EF4444', stay:'#FF385C' };
+      const labels = { checkin:'Check-in', checkout:'Check-out', stay:'Staying' };
+
+      document.getElementById('popupContent').innerHTML = events.map(ev => `
+        <div class="day-popup-item" style="background:${colors[ev.type]}18;border:1px solid ${colors[ev.type]}30;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="item-name">${ev.res.guestName}</div>
+            <span style="font-size:0.68rem;font-weight:600;color:${colors[ev.type]};">${labels[ev.type]}</span>
+          </div>
+          <div class="item-detail">Room ${ev.res.roomNumber} · ${ev.res.roomType} · #${String(ev.res.reservationId).padStart(4,'0')}</div>
+          <div class="item-detail">${ev.res.checkInDate} → ${ev.res.checkOutDate}</div>
+          <a href="reservation-detail.html?id=${ev.res.reservationId}" style="font-size:0.72rem;color:#FF385C;text-decoration:none;margin-top:0.3rem;display:inline-block;">View →</a>
+        </div>`).join('');
+
+      popup.style.display = 'block';
+      const rect = e.currentTarget.getBoundingClientRect();
+      let left = rect.left + window.scrollX;
+      let top = rect.bottom + window.scrollY + 8;
+      if (left + 290 > window.innerWidth) left = window.innerWidth - 295;
+      if (top + 200 > window.innerHeight + window.scrollY) top = rect.top + window.scrollY - 220;
+      popup.style.left = left + 'px';
+      popup.style.top = top + 'px';
+    }
+
+    function closePopup() { document.getElementById('dayPopup').style.display = 'none'; }
+
+    document.addEventListener('click', e => {
+      const popup = document.getElementById('dayPopup');
+      if (!popup.contains(e.target) && !e.target.closest('.cal-day')) closePopup();
+    });
+
+    // ── STATS ─────────────────────────────────────────────────
+    async function loadStats() {
+      try {
+        const [r1, r2, r3] = await Promise.all([
+          fetch('/api/reservations', { headers: { 'Authorization': 'Bearer ' + token } }),
+          fetch('/api/rooms',        { headers: { 'Authorization': 'Bearer ' + token } }),
+          fetch('/api/bills',        { headers: { 'Authorization': 'Bearer ' + token } })
+        ]);
+        const [d1, d2, d3] = await Promise.all([r1.json(), r2.json(), r3.json()]);
+
+        if (d1.success) {
+          document.getElementById('statTotal').textContent = d1.data.length;
+          document.getElementById('statActive').textContent = d1.data.filter(r=>r.status==='CONFIRMED').length;
+          const recent = d1.data.slice(0,5);
+          document.getElementById('recentTable').innerHTML = recent.length === 0
+            ? '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--subtext);">No reservations yet.</td></tr>'
+            : recent.map(r => `
+              <tr>
+                <td><strong>#${String(r.reservationId).padStart(4,'0')}</strong></td>
+                <td>${r.guestName}</td>
+                <td>Room ${r.roomNumber}</td>
+                <td>${r.checkInDate}</td>
+                <td>${r.checkOutDate}</td>
+                <td><span class="badge ${r.status.toLowerCase()}"><span class="badge-dot"></span>${r.status}</span></td>
+                <td><a href="reservation-detail.html?id=${r.reservationId}" class="action-link">View →</a></td>
+              </tr>`).join('');
+        }
+        if (d2.success) document.getElementById('statRooms').textContent = d2.data.filter(r=>r.isAvailable).length;
+        if (d3.success) {
+          const rev = d3.data.filter(b=>b.isPaid).reduce((s,b)=>s+b.totalAmount,0);
+          document.getElementById('statRevenue').textContent = rev > 0 ? (rev/1000).toFixed(1)+'K' : '0';
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('show');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method:'POST', headers:{'Authorization':'Bearer '+token} });
+      localStorage.clear(); window.location.href = 'login.html';
+    });
+
+    loadStats();
+    loadCalendar();
+</script>
+</body>
+</html>

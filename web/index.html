@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ocean View Resort — Galle, Sri Lanka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="/js/theme.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+          --primary: #FF385C;
+          --primary-hover: #E31C5F;
+          --dark: #222222;
+          --text: #FFFFFF;
+          --subtext: rgba(255,255,255,0.75);
+          --glass-bg: rgba(255,255,255,0.07);
+          --glass-border: rgba(255,255,255,0.15);
+          --overlay: rgba(10,10,20,0.55);
+        }
+        [data-theme="light"] {
+          --text: #222222;
+          --subtext: rgba(34,34,34,0.7);
+          --glass-bg: rgba(255,255,255,0.6);
+          --glass-border: rgba(255,255,255,0.9);
+          --overlay: rgba(255,255,255,0.3);
+        }
+
+        html, body { height: 100%; overflow-x: hidden; }
+
+        body {
+          font-family: 'DM Sans', sans-serif;
+          background: #0a0a14;
+          color: var(--text);
+          transition: color 0.4s;
+        }
+
+        /* ── VIDEO BG ── */
+        #video-bg {
+          position: fixed; inset: 0; z-index: 0;
+          pointer-events: none; overflow: hidden;
+        }
+        #video-bg iframe {
+          position: absolute;
+          top: 50%; left: 50%;
+          width: 100vw; height: 56.25vw;
+          min-height: 100vh; min-width: 177.78vh;
+          transform: translate(-50%,-50%);
+          border: none;
+        }
+        .video-overlay {
+          position: fixed; inset: 0; z-index: 1;
+          background: var(--overlay);
+          backdrop-filter: blur(1px);
+          transition: background 0.4s;
+        }
+
+        /* ── NAV ── */
+        nav {
+          position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 1.5rem 3rem;
+          background: rgba(0,0,0,0.15);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--glass-border);
+          animation: slideDown 0.8s ease both;
+        }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+        .nav-logo {
+          display: flex; align-items: center; gap: 0.75rem;
+          text-decoration: none;
+        }
+        .logo-icon {
+          width: 38px; height: 38px;
+          background: linear-gradient(135deg, #FF385C, #E31C5F);
+          border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.1rem; font-weight: 700; color: white;
+          box-shadow: 0 4px 15px rgba(255,56,92,0.4);
+        }
+        .logo-text {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.25rem; font-weight: 600;
+          color: var(--text); letter-spacing: 0.02em;
+        }
+
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+        .theme-toggle {
+          width: 42px; height: 42px; border-radius: 50%;
+          background: var(--glass-bg);
+          border: 1px solid var(--glass-border);
+          color: var(--text); cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.1rem; transition: all 0.3s;
+          backdrop-filter: blur(8px);
+        }
+        .theme-toggle:hover { background: var(--primary); border-color: var(--primary); transform: scale(1.05); }
+
+        .btn-nav {
+          padding: 0.6rem 1.5rem; border-radius: 100px;
+          font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+          cursor: pointer; transition: all 0.3s; text-decoration: none;
+          display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .btn-outline {
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          color: var(--text); backdrop-filter: blur(8px);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); border: none; color: white; box-shadow: 0 4px 15px rgba(255,56,92,0.35); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,56,92,0.5); }
+
+        /* ── HERO ── */
+        .hero {
+          position: relative; z-index: 10;
+          min-height: 100vh;
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          text-align: center; padding: 2rem 1.5rem;
+        }
+
+        .hero-badge {
+          display: inline-flex; align-items: center; gap: 0.5rem;
+          padding: 0.45rem 1.2rem; border-radius: 100px;
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          backdrop-filter: blur(10px);
+          font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em;
+          text-transform: uppercase; color: var(--subtext);
+          margin-bottom: 2rem;
+          animation: fadeUp 1s 0.3s ease both;
+        }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.5);opacity:0.6;} }
+
+        .hero-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(3rem, 9vw, 7.5rem);
+          font-weight: 300; line-height: 1.0;
+          letter-spacing: -0.02em;
+          color: var(--text);
+          margin-bottom: 0.2em;
+          animation: fadeUp 1s 0.5s ease both;
+        }
+        .hero-title em { font-style: italic; color: var(--primary); }
+        .hero-title span { display: block; }
+
+        .hero-subtitle {
+          font-size: clamp(1rem, 2vw, 1.2rem);
+          font-weight: 300; color: var(--subtext);
+          max-width: 520px; line-height: 1.7;
+          margin: 1.5rem auto 2.5rem;
+          animation: fadeUp 1s 0.7s ease both;
+        }
+
+        .hero-cta {
+          display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+          animation: fadeUp 1s 0.9s ease both;
+        }
+        .btn-hero {
+          padding: 1rem 2.5rem; border-radius: 100px;
+          font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+          cursor: pointer; transition: all 0.3s; text-decoration: none;
+          display: inline-flex; align-items: center; gap: 0.6rem;
+        }
+        .btn-hero-primary {
+          background: var(--primary); border: none; color: white;
+          box-shadow: 0 8px 25px rgba(255,56,92,0.4);
+        }
+        .btn-hero-primary:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 12px 35px rgba(255,56,92,0.55); }
+        .btn-hero-ghost {
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          color: var(--text); backdrop-filter: blur(10px);
+        }
+        .btn-hero-ghost:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+
+        /* ── STATS STRIP ── */
+        .stats-strip {
+          position: relative; z-index: 10;
+          display: flex; justify-content: center; flex-wrap: wrap; gap: 1px;
+          padding: 0 1.5rem 3rem;
+          animation: fadeUp 1s 1.1s ease both;
+        }
+        .stat-card {
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          backdrop-filter: blur(12px);
+          padding: 1.5rem 2.5rem; text-align: center;
+          transition: transform 0.3s;
+        }
+        .stat-card:first-child { border-radius: 20px 0 0 20px; }
+        .stat-card:last-child { border-radius: 0 20px 20px 0; }
+        .stat-card:hover { transform: translateY(-4px); }
+        .stat-num {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 2.2rem; font-weight: 600; color: var(--text);
+          line-height: 1;
+        }
+        .stat-label { font-size: 0.78rem; color: var(--subtext); margin-top: 0.3rem; letter-spacing: 0.05em; text-transform: uppercase; }
+
+        /* ── FEATURES SECTION ── */
+        .section {
+          position: relative; z-index: 10;
+          padding: 6rem 1.5rem;
+          max-width: 1200px; margin: 0 auto;
+        }
+        .section-tag {
+          display: inline-block;
+          font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em;
+          text-transform: uppercase; color: var(--primary);
+          margin-bottom: 1rem;
+        }
+        .section-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(2rem, 5vw, 3.5rem);
+          font-weight: 300; color: var(--text);
+          line-height: 1.15; margin-bottom: 1rem;
+        }
+        .section-title em { font-style: italic; }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem; margin-top: 3rem;
+        }
+        .feature-card {
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          backdrop-filter: blur(12px);
+          border-radius: 20px; padding: 2rem;
+          transition: all 0.4s;
+          position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+          content: ''; position: absolute;
+          top: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg, transparent, var(--primary), transparent);
+          transform: scaleX(0); transition: transform 0.4s;
+        }
+        .feature-card:hover { transform: translateY(-8px); border-color: rgba(255,56,92,0.3); }
+        .feature-card:hover::before { transform: scaleX(1); }
+
+        .feature-icon {
+          width: 52px; height: 52px; border-radius: 14px;
+          background: linear-gradient(135deg, rgba(255,56,92,0.2), rgba(255,56,92,0.05));
+          border: 1px solid rgba(255,56,92,0.3);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.4rem; margin-bottom: 1.2rem;
+        }
+        .feature-title { font-size: 1.05rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+        .feature-desc { font-size: 0.875rem; color: var(--subtext); line-height: 1.65; }
+
+        /* ── ROOMS PREVIEW ── */
+        .rooms-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem; margin-top: 3rem;
+        }
+        .room-card {
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          backdrop-filter: blur(12px);
+          border-radius: 24px; overflow: hidden;
+          transition: all 0.4s; cursor: pointer;
+        }
+        .room-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .room-visual {
+          height: 180px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 4rem; position: relative; overflow: hidden;
+        }
+        .room-visual.standard { background: linear-gradient(135deg, #1a2a3a, #2d4a6b); }
+        .room-visual.deluxe { background: linear-gradient(135deg, #1a3a2a, #2d6b4a); }
+        .room-visual.suite { background: linear-gradient(135deg, #3a1a2a, #6b2d4a); }
+        .room-tag {
+          position: absolute; top: 1rem; right: 1rem;
+          padding: 0.3rem 0.8rem; border-radius: 100px;
+          background: var(--primary); color: white;
+          font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .room-info { padding: 1.5rem; }
+        .room-name { font-size: 1.05rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; }
+        .room-desc { font-size: 0.8rem; color: var(--subtext); margin-bottom: 1rem; line-height: 1.5; }
+        .room-footer { display: flex; align-items: center; justify-content: space-between; }
+        .room-price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--text); }
+        .room-price span { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: var(--subtext); font-weight: 400; }
+
+        /* ── FOOTER ── */
+        footer {
+          position: relative; z-index: 10;
+          text-align: center; padding: 3rem 1.5rem;
+          border-top: 1px solid var(--glass-border);
+          background: rgba(0,0,0,0.2);
+          backdrop-filter: blur(12px);
+        }
+        footer p { color: var(--subtext); font-size: 0.85rem; }
+        footer strong { color: var(--primary); }
+
+        /* ── SCROLL INDICATOR ── */
+        .scroll-hint {
+          position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+          z-index: 10; animation: bounce 2s infinite;
+          color: var(--subtext); font-size: 0.75rem; letter-spacing: 0.1em;
+          text-transform: uppercase; text-align: center;
+        }
+        .scroll-line {
+          width: 1px; height: 50px; background: linear-gradient(to bottom, var(--primary), transparent);
+          margin: 0.5rem auto 0;
+        }
+        @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-8px);} }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+          nav { padding: 1rem 1.5rem; }
+          .logo-text { display: none; }
+          .stat-card:not(:first-child):not(:last-child) { border-radius: 0; }
+          .stat-card:first-child { border-radius: 20px 20px 0 0; }
+          .stat-card:last-child { border-radius: 0 0 20px 20px; }
+          .stats-strip { flex-direction: column; gap: 1px; max-width: 300px; margin: 0 auto 3rem; }
+          .hero-cta { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<div id="video-bg">
+    <iframe
+            src="https://www.youtube.com/embed/2cpEyd3vrRg?autoplay=1&mute=1&loop=1&playlist=2cpEyd3vrRg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+    </iframe>
+</div>
+<div class="video-overlay"></div>
+
+<!-- NAV -->
+<nav>
+    <a href="index.html" class="nav-logo">
+        <div class="logo-icon">OV</div>
+        <span class="logo-text">Ocean View Resort</span>
+    </a>
+    <div class="nav-actions">
+        <button class="theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+        <a href="login.html" class="btn-nav btn-primary">Staff Portal →</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Staff Management Portal · Ocean View Resort
+    </div>
+    <h1 class="hero-title">
+        <span>Manage with</span>
+        <span><em>Elegance</em> &</span>
+        <span>Precision</span>
+    </h1>
+    <p class="hero-subtitle">
+        Welcome to the Ocean View Resort staff portal — your complete command centre for reservations, billing, and guest management.
+    </p>
+    <div class="hero-cta">
+        <a href="login.html" class="btn-hero btn-hero-primary">
+            ✦ Staff Login
+        </a>
+        <a href="#features" class="btn-hero btn-hero-ghost">
+            System Features ↓
+        </a>
+    </div>
+
+    <div class="scroll-hint">
+        Scroll
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+    <div class="stat-card">
+        <div class="stat-num">6+</div>
+        <div class="stat-label">Room Types</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Guest Rating</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">10yr</div>
+        <div class="stat-label">Of Excellence</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Concierge</div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="features">
+    <p class="section-tag">System Capabilities</p>
+    <h2 class="section-title">Everything You Need to<br><em>Run</em> the Resort</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">📋</div>
+            <div class="feature-title">Reservation Management</div>
+            <div class="feature-desc">Create, view, update and cancel guest reservations with full validation and real-time room availability checking.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🧾</div>
+            <div class="feature-title">Automated Billing</div>
+            <div class="feature-desc">Automatically calculate stay costs based on room rates and nights. Generate and print professional bills instantly.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🏨</div>
+            <div class="feature-title">Room Management</div>
+            <div class="feature-desc">Manage all room types, pricing, and availability. Add new rooms and update details from a single interface.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Reports & Analytics</div>
+            <div class="feature-desc">View revenue summaries, occupancy rates, and reservation statistics to make informed management decisions.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <div class="feature-title">Secure Access</div>
+            <div class="feature-desc">Role-based authentication with SHA-256 password hashing ensures only authorised staff access the system.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <div class="feature-title">Audit Trail</div>
+            <div class="feature-desc">Every action is logged with timestamps and user details, providing full accountability and system transparency.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ROOMS PREVIEW -->
+<div class="section" id="rooms">
+    <p class="section-tag">Accommodations</p>
+    <h2 class="section-title">Our <em>Room</em> Categories</h2>
+    <div class="rooms-grid">
+        <div class="room-card">
+            <div class="room-visual standard">
+                🏨
+                <div class="room-tag">From LKR 5,000</div>
+            </div>
+            <div class="room-info">
+                <div class="room-name">Standard Room</div>
+                <div class="room-desc">Comfortable and elegantly furnished with garden views. Perfect for solo travellers and couples.</div>
+                <div class="room-footer">
+                    <div class="room-price">LKR 5,000 <span>/ night</span></div>
+                    <span style="font-size:0.78rem;color:var(--subtext);">2 rooms available</span>
+                </div>
+            </div>
+        </div>
+        <div class="room-card">
+            <div class="room-visual deluxe">
+                🌅
+                <div class="room-tag">Most Popular</div>
+            </div>
+            <div class="room-info">
+                <div class="room-name">Deluxe Room</div>
+                <div class="room-desc">Spacious rooms with partial ocean views, premium amenities, and a private balcony for sunset watching.</div>
+                <div class="room-footer">
+                    <div class="room-price">LKR 8,500 <span>/ night</span></div>
+                    <span style="font-size:0.78rem;color:var(--subtext);">2 rooms available</span>
+                </div>
+            </div>
+        </div>
+        <div class="room-card">
+            <div class="room-visual suite">
+                👑
+                <div class="room-tag">Luxury</div>
+            </div>
+            <div class="room-info">
+                <div class="room-name">Ocean Suite</div>
+                <div class="room-desc">The pinnacle of luxury — full ocean views, private balcony, butler service, and a jacuzzi with ocean panorama.</div>
+                <div class="room-footer">
+                    <div class="room-price">LKR 15,000 <span>/ night</span></div>
+                    <span style="font-size:0.78rem;color:var(--subtext);">2 rooms available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2025 <strong>Ocean View Resort</strong> · Galle, Sri Lanka · All Rights Reserved</p>
+    <p style="margin-top:0.5rem;">Designed with ♥ for exceptional hospitality</p>
+</footer>
+
+<script>
+
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card, .room-card, .stat-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+</script>
+</body>
+</html>

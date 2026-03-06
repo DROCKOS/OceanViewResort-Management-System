@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Profile — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --primary-hover: #E31C5F;
+          --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55); --hover: rgba(255,255,255,0.08);
+          --input-bg: rgba(255,255,255,0.07); --input-border: rgba(255,255,255,0.15);
+          --success: #10B981; --danger: #EF4444;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55); --hover: rgba(0,0,0,0.05);
+          --input-bg: rgba(255,255,255,0.8); --input-border: rgba(0,0,0,0.15);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+
+        /* SIDEBAR */
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+
+        /* MAIN */
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; }
+        .topbar-sub { font-size: 0.78rem; color: var(--subtext); margin-top: 0.1rem; }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+
+        .content { padding: 2rem; max-width: 720px; }
+
+        /* PROFILE CARD */
+        .profile-hero { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 2rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.75rem; }
+        .profile-avatar-lg { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: white; flex-shrink: 0; box-shadow: 0 8px 24px rgba(255,56,92,0.3); }
+        .profile-info { flex: 1; }
+        .profile-name { font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 600; color: var(--text); line-height: 1.1; }
+        .profile-role-badge { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.4rem; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.72rem; font-weight: 600; }
+        .role-admin { background: rgba(255,56,92,0.15); color: var(--primary); border: 1px solid rgba(255,56,92,0.3); }
+        .role-staff { background: rgba(59,130,246,0.15); color: #3B82F6; border: 1px solid rgba(59,130,246,0.3); }
+        .profile-meta { font-size: 0.8rem; color: var(--subtext); margin-top: 0.5rem; }
+
+        /* SECTION CARDS */
+        .section-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; overflow: hidden; margin-bottom: 1.25rem; }
+        .section-head { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 0.75rem; }
+        .section-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .section-icon.blue { background: rgba(59,130,246,0.15); }
+        .section-icon.orange { background: rgba(245,158,11,0.15); }
+        .section-title { font-size: 0.95rem; font-weight: 500; }
+        .section-sub { font-size: 0.75rem; color: var(--subtext); margin-top: 0.1rem; }
+        .section-body { padding: 1.5rem; }
+
+        /* FORM */
+        .form-group { margin-bottom: 1.1rem; }
+        .form-label { display: block; font-size: 0.7rem; font-weight: 500; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+        .form-label span { color: var(--primary); }
+        .input-wrap { position: relative; }
+        .form-input { width: 100%; padding: 0.75rem 1rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.3s; }
+        .form-input::placeholder { color: var(--subtext); }
+        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,56,92,0.12); }
+        .form-input:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pw-toggle { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--subtext); cursor: pointer; font-size: 0.9rem; padding: 0.2rem; }
+        .pw-toggle:hover { color: var(--text); }
+
+        .form-hint { font-size: 0.72rem; color: var(--subtext); margin-top: 0.35rem; }
+
+        /* PASSWORD STRENGTH */
+        .pw-strength { margin-top: 0.5rem; }
+        .pw-bars { display: flex; gap: 3px; }
+        .pw-bar { flex: 1; height: 3px; border-radius: 100px; background: var(--card-border); transition: background 0.3s; }
+        .pw-bar.weak { background: #EF4444; }
+        .pw-bar.medium { background: #F59E0B; }
+        .pw-bar.strong { background: #10B981; }
+        .pw-label { font-size: 0.7rem; color: var(--subtext); margin-top: 0.35rem; }
+
+        /* BUTTONS */
+        .form-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+        .btn-save { padding: 0.7rem 1.5rem; border-radius: 12px; background: var(--primary); border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .btn-save:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-cancel { padding: 0.7rem 1.25rem; border-radius: 12px; background: var(--hover); border: 1px solid var(--card-border); color: var(--subtext); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; cursor: pointer; }
+
+        /* ALERT */
+        .alert { padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.825rem; margin-bottom: 1rem; display: none; }
+        .alert.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #EF4444; display: flex; align-items: center; gap: 0.5rem; }
+        .alert.success-alert { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #10B981; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* DANGER ZONE */
+        .danger-note { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1rem 1.25rem; font-size: 0.82rem; color: var(--subtext); line-height: 1.6; }
+        .danger-note strong { color: var(--danger); }
+
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; } .mobile-toggle { display: flex; } .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; } .profile-hero { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="help.html" class="nav-item"><span class="nav-icon">❓</span> Help</a>
+        <a href="settings.html" class="nav-item" id="settingsNavItem"><span class="nav-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div><div class="user-name" id="userName">Admin</div><div class="user-role">Staff Portal</div></div>
+        </div>
+        <a href="profile.html" class="nav-item active" id="profileNavBtn"><span class="nav-icon">👤</span> My Profile</a>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div><div class="topbar-title">My Profile</div><div class="topbar-sub">Manage your account credentials</div></div>
+        <div class="topbar-actions"><button class="btn-icon" id="themeBtn">🌙</button></div>
+    </div>
+
+    <div class="content">
+
+        <!-- PROFILE HERO -->
+        <div class="profile-hero">
+            <div class="profile-avatar-lg" id="heroAvatar">A</div>
+            <div class="profile-info">
+                <div class="profile-name" id="heroName">Loading...</div>
+                <div class="profile-role-badge" id="heroRoleBadge">—</div>
+                <div class="profile-meta" id="heroMeta">Ocean View Resort Management System</div>
+            </div>
+        </div>
+
+        <!-- CHANGE USERNAME -->
+        <div class="section-card">
+            <div class="section-head">
+                <div class="section-icon blue">✏️</div>
+                <div>
+                    <div class="section-title">Change Username</div>
+                    <div class="section-sub">Update your login username — requires current password to confirm</div>
+                </div>
+            </div>
+            <div class="section-body">
+                <div id="usernameAlert" class="alert"></div>
+                <div class="form-group">
+                    <label class="form-label">Current Username</label>
+                    <input type="text" id="currentUsername" class="form-input" disabled/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Username <span>*</span></label>
+                    <input type="text" id="newUsername" class="form-input" placeholder="Enter new username" autocomplete="off"/>
+                    <div class="form-hint">3–30 characters, letters and numbers only.</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Current Password <span>*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="usernameConfirmPw" class="form-input" placeholder="Confirm with your password" autocomplete="current-password"/>
+                        <button class="pw-toggle" type="button" onclick="togglePw('usernameConfirmPw', this)">👁️</button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-cancel" onclick="resetUsernameForm()">Reset</button>
+                    <button class="btn-save" id="saveUsernameBtn" onclick="saveUsername()">Update Username</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHANGE PASSWORD -->
+        <div class="section-card">
+            <div class="section-head">
+                <div class="section-icon orange">🔒</div>
+                <div>
+                    <div class="section-title">Change Password</div>
+                    <div class="section-sub">Choose a strong password — min. 8 chars with uppercase, number and symbol</div>
+                </div>
+            </div>
+            <div class="section-body">
+                <div id="passwordAlert" class="alert"></div>
+                <div class="form-group">
+                    <label class="form-label">Current Password <span>*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="currentPassword" class="form-input" placeholder="Your current password" autocomplete="current-password"/>
+                        <button class="pw-toggle" type="button" onclick="togglePw('currentPassword', this)">👁️</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password <span>*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="newPassword" class="form-input" placeholder="Enter new password" oninput="checkStrength()" autocomplete="new-password"/>
+                        <button class="pw-toggle" type="button" onclick="togglePw('newPassword', this)">👁️</button>
+                    </div>
+                    <div class="pw-strength" id="strengthWrap" style="display:none;">
+                        <div class="pw-bars">
+                            <div class="pw-bar" id="bar1"></div>
+                            <div class="pw-bar" id="bar2"></div>
+                            <div class="pw-bar" id="bar3"></div>
+                            <div class="pw-bar" id="bar4"></div>
+                        </div>
+                        <div class="pw-label" id="strengthLabel">—</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password <span>*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="Repeat new password" autocomplete="new-password"/>
+                        <button class="pw-toggle" type="button" onclick="togglePw('confirmPassword', this)">👁️</button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-cancel" onclick="resetPasswordForm()">Reset</button>
+                    <button class="btn-save" id="savePasswordBtn" onclick="savePassword()">Update Password</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECURITY NOTE -->
+        <div class="danger-note">
+            <strong>Security reminder:</strong> After changing your password, you will remain logged in on this device. Other sessions (if any) will require the new password on next login. Never share your credentials with anyone.
+        </div>
+
+    </div>
+</main>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    let currentUser = { username: '', role: '' };
+
+    async function loadProfile() {
+      try {
+        const res = await fetch('/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (res.status === 401) { localStorage.clear(); window.location.href = 'login.html'; return; }
+        const data = await res.json();
+        if (data.success) {
+          currentUser = data.data;
+          renderProfile();
+        }
+      } catch(e) { console.error('Profile load failed', e); }
+    }
+
+    function renderProfile() {
+      const u = currentUser.username || 'User';
+      const r = currentUser.role || 'STAFF';
+      const initial = u.charAt(0).toUpperCase();
+
+      // Sidebar
+      document.getElementById('userName').textContent = u;
+      document.getElementById('userAvatar').textContent = initial;
+
+      // Hero
+      document.getElementById('heroAvatar').textContent = initial;
+      document.getElementById('heroName').textContent = u;
+
+      const badge = document.getElementById('heroRoleBadge');
+      badge.textContent = r === 'ADMIN' ? '⭐ Administrator' : '👤 Staff';
+      badge.className = 'profile-role-badge ' + (r === 'ADMIN' ? 'role-admin' : 'role-staff');
+
+      document.getElementById('heroMeta').textContent = `Logged in as ${u} · Ocean View Resort`;
+
+      // Username form prefill
+      document.getElementById('currentUsername').value = u;
+    }
+
+    // ── USERNAME ────────────────────────────────────────────
+    async function saveUsername() {
+      const btn = document.getElementById('saveUsernameBtn');
+      const alertEl = document.getElementById('usernameAlert');
+      alertEl.className = 'alert';
+
+      const newUsername = document.getElementById('newUsername').value.trim();
+      const password = document.getElementById('usernameConfirmPw').value;
+
+      if (!newUsername) { showAlert(alertEl, 'error', 'Please enter a new username.'); return; }
+      if (newUsername === currentUser.username) { showAlert(alertEl, 'error', 'New username must be different from current.'); return; }
+      if (!/^[a-zA-Z0-9_]{3,30}$/.test(newUsername)) { showAlert(alertEl, 'error', 'Username must be 3–30 characters, letters/numbers/underscore only.'); return; }
+      if (!password) { showAlert(alertEl, 'error', 'Please enter your current password.'); return; }
+
+      btn.disabled = true; btn.textContent = 'Updating...';
+      try {
+        const res = await fetch('/api/profile/username', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ newUsername, currentPassword: password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem('username', newUsername);
+          currentUser.username = newUsername;
+          renderProfile();
+          document.getElementById('newUsername').value = '';
+          document.getElementById('usernameConfirmPw').value = '';
+          showAlert(alertEl, 'success-alert', '✓ Username updated successfully!');
+        } else {
+          showAlert(alertEl, 'error', data.message || 'Failed to update username.');
+        }
+      } catch(e) { showAlert(alertEl, 'error', 'Server error. Please try again.'); }
+      btn.disabled = false; btn.textContent = 'Update Username';
+    }
+
+    function resetUsernameForm() {
+      document.getElementById('newUsername').value = '';
+      document.getElementById('usernameConfirmPw').value = '';
+      document.getElementById('usernameAlert').className = 'alert';
+    }
+
+    // ── PASSWORD ────────────────────────────────────────────
+    function checkStrength() {
+      const pw = document.getElementById('newPassword').value;
+      const wrap = document.getElementById('strengthWrap');
+      const label = document.getElementById('strengthLabel');
+      const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
+
+      if (!pw) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'block';
+
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^a-zA-Z0-9]/.test(pw)) score++;
+
+      const classes = ['','weak','medium','medium','strong'];
+      const labels = ['','Weak','Fair','Good','Strong 💪'];
+      bars.forEach((b, i) => { b.className = 'pw-bar' + (i < score ? ' '+classes[score] : ''); });
+      label.textContent = labels[score] || '';
+      label.style.color = score === 1 ? '#EF4444' : score === 2 ? '#F59E0B' : score === 3 ? '#F59E0B' : '#10B981';
+    }
+
+    async function savePassword() {
+      const btn = document.getElementById('savePasswordBtn');
+      const alertEl = document.getElementById('passwordAlert');
+      alertEl.className = 'alert';
+
+      const currentPw = document.getElementById('currentPassword').value;
+      const newPw = document.getElementById('newPassword').value;
+      const confirmPw = document.getElementById('confirmPassword').value;
+
+      if (!currentPw) { showAlert(alertEl, 'error', 'Please enter your current password.'); return; }
+      if (!newPw) { showAlert(alertEl, 'error', 'Please enter a new password.'); return; }
+      if (newPw.length < 8) { showAlert(alertEl, 'error', 'Password must be at least 8 characters.'); return; }
+      if (!/[A-Z]/.test(newPw)) { showAlert(alertEl, 'error', 'Password must contain at least one uppercase letter.'); return; }
+      if (!/[0-9]/.test(newPw)) { showAlert(alertEl, 'error', 'Password must contain at least one number.'); return; }
+      if (!/[^a-zA-Z0-9]/.test(newPw)) { showAlert(alertEl, 'error', 'Password must contain at least one symbol (@, #, ! etc).'); return; }
+      if (newPw !== confirmPw) { showAlert(alertEl, 'error', 'Passwords do not match.'); return; }
+      if (newPw === currentPw) { showAlert(alertEl, 'error', 'New password must be different from current.'); return; }
+
+      btn.disabled = true; btn.textContent = 'Updating...';
+      try {
+        const res = await fetch('/api/profile/password', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
+        });
+        const data = await res.json();
+        if (data.success) {
+          resetPasswordForm();
+          showAlert(alertEl, 'success-alert', '✓ Password changed successfully!');
+        } else {
+          showAlert(alertEl, 'error', data.message || 'Failed to update password.');
+        }
+      } catch(e) { showAlert(alertEl, 'error', 'Server error. Please try again.'); }
+      btn.disabled = false; btn.textContent = 'Update Password';
+    }
+
+    function resetPasswordForm() {
+      ['currentPassword','newPassword','confirmPassword'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('passwordAlert').className = 'alert';
+      document.getElementById('strengthWrap').style.display = 'none';
+    }
+
+    // ── HELPERS ─────────────────────────────────────────────
+    function showAlert(el, type, msg) {
+      el.className = 'alert ' + type;
+      el.textContent = msg;
+      setTimeout(() => { el.className = 'alert'; }, 5000);
+    }
+
+    function togglePw(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      btn.textContent = isText ? '👁️' : '🙈';
+    }
+
+    document.getElementById('mobileToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+    document.getElementById('logoutBtn').addEventListener('click', async () => { await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } }); localStorage.clear(); window.location.href = 'login.html'; });
+
+    loadProfile();
+</script>
+</body>
+</html>

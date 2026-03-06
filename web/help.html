@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Help — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55); --hover: rgba(255,255,255,0.08);
+          --success: #10B981; --info: #3B82F6;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55); --hover: rgba(0,0,0,0.05);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--text); }
+        .topbar-sub { font-size: 0.78rem; color: var(--subtext); margin-top: 0.1rem; }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+        .btn-icon:hover { background: var(--hover); }
+
+        .content { padding: 2rem; max-width: 900px; }
+
+        /* HERO */
+        .help-hero { background: linear-gradient(135deg, rgba(255,56,92,0.15), rgba(124,58,237,0.1)); border: 1px solid rgba(255,56,92,0.2); border-radius: 20px; padding: 2.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .help-hero-icon { font-size: 3.5rem; flex-shrink: 0; }
+        .help-hero-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--text); margin-bottom: 0.4rem; }
+        .help-hero-sub { font-size: 0.9rem; color: var(--subtext); line-height: 1.6; }
+
+        /* QUICK LINKS */
+        .quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .quick-link { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 1.25rem; text-decoration: none; transition: all 0.25s; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+        .quick-link:hover { border-color: var(--primary); background: rgba(255,56,92,0.08); transform: translateY(-3px); }
+        .quick-link-icon { font-size: 1.75rem; }
+        .quick-link-label { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+
+        /* SECTIONS */
+        .help-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; margin-bottom: 1.25rem; overflow: hidden; }
+        .help-section-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; cursor: pointer; transition: background 0.2s; user-select: none; }
+        .help-section-header:hover { background: var(--hover); }
+        .help-section-left { display: flex; align-items: center; gap: 0.875rem; }
+        .help-section-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+        .help-section-title { font-size: 0.95rem; font-weight: 500; color: var(--text); }
+        .help-section-sub { font-size: 0.75rem; color: var(--subtext); margin-top: 0.1rem; }
+        .chevron { font-size: 0.875rem; color: var(--subtext); transition: transform 0.3s; }
+        .chevron.open { transform: rotate(180deg); }
+
+        .help-section-body { display: none; padding: 0 1.5rem 1.5rem; border-top: 1px solid var(--card-border); }
+        .help-section-body.open { display: block; animation: fadeDown 0.3s ease; }
+        @keyframes fadeDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
+        .step-list { list-style: none; margin-top: 1rem; }
+        .step-list li { display: flex; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        [data-theme="light"] .step-list li { border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .step-list li:last-child { border-bottom: none; }
+        .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .step-text { font-size: 0.875rem; color: var(--text); line-height: 1.6; }
+        .step-text strong { color: var(--primary); }
+        .step-text code { background: var(--hover); padding: 0.15rem 0.4rem; border-radius: 5px; font-family: monospace; font-size: 0.8rem; color: var(--info); }
+
+        .tip-box { display: flex; gap: 0.75rem; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 12px; padding: 1rem; margin-top: 1rem; }
+        .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+        .tip-text { font-size: 0.825rem; color: var(--subtext); line-height: 1.65; }
+        .tip-text strong { color: var(--text); }
+
+        /* CREDENTIALS */
+        .cred-box { background: var(--hover); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; font-size: 0.875rem; }
+        .cred-row { display: flex; justify-content: space-between; padding: 0.4rem 0; }
+        .cred-label { color: var(--subtext); }
+        .cred-value { font-family: monospace; color: var(--info); font-weight: 600; }
+
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); }
+          .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; }
+          .mobile-toggle { display: flex; }
+          .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="help.html" class="nav-item active"><span class="nav-icon">❓</span> Help</a>
+        <a href="settings.html" class="nav-item" id="settingsNavItem"><span class="nav-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div><div class="user-name" id="userName">Admin</div><div class="user-role">Staff Portal</div></div>
+        </div>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div>
+            <div class="topbar-title">Help & Guide</div>
+            <div class="topbar-sub">Staff user manual for Ocean View Resort system</div>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn-icon" id="themeBtn">🌙</button>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- HERO -->
+        <div class="help-hero">
+            <div class="help-hero-icon">📖</div>
+            <div>
+                <div class="help-hero-title">Welcome to the Staff Guide</div>
+                <div class="help-hero-sub">This manual covers all features of the Ocean View Resort management system. Use the sections below to learn how to manage reservations, generate bills, handle rooms, and more. Click any section to expand it.</div>
+            </div>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="quick-links">
+            <a href="add-reservation.html" class="quick-link"><div class="quick-link-icon">📋</div><div class="quick-link-label">New Reservation</div></a>
+            <a href="reservations.html" class="quick-link"><div class="quick-link-icon">🔍</div><div class="quick-link-label">View Reservations</div></a>
+            <a href="bills.html" class="quick-link"><div class="quick-link-icon">🧾</div><div class="quick-link-label">Billing</div></a>
+            <a href="rooms.html" class="quick-link"><div class="quick-link-icon">🏨</div><div class="quick-link-label">Rooms</div></a>
+            <a href="reports.html" class="quick-link"><div class="quick-link-icon">📈</div><div class="quick-link-label">Reports</div></a>
+            <a href="audit.html" class="quick-link"><div class="quick-link-icon">🔐</div><div class="quick-link-label">Audit Logs</div></a>
+        </div>
+
+        <!-- SECTION 1: LOGIN -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(59,130,246,0.15);">🔐</div>
+                    <div>
+                        <div class="help-section-title">Logging In & Out</div>
+                        <div class="help-section-sub">How to access and exit the system</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">Navigate to <strong>http://localhost:8080</strong> in your browser to reach the landing page.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text">Click the <strong>Staff Portal</strong> button in the top right corner of the landing page.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text">Enter your credentials. Default: Username <code>admin</code> · Password <code>Admin@1234</code></div></li>
+                    <li><div class="step-num">4</div><div class="step-text">Press <strong>Enter</strong> or click <strong>Sign In to Portal</strong>. You will be redirected to the Dashboard.</div></li>
+                    <li><div class="step-num">5</div><div class="step-text">To log out, click <strong>Sign Out</strong> at the bottom of the left sidebar at any time.</div></li>
+                </ul>
+                <div class="cred-box">
+                    <div class="cred-row"><span class="cred-label">Default Username</span><span class="cred-value">admin</span></div>
+                    <div class="cred-row"><span class="cred-label">Default Password</span><span class="cred-value">Admin@1234</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: RESERVATION -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(255,56,92,0.15);">📋</div>
+                    <div>
+                        <div class="help-section-title">Creating a Reservation</div>
+                        <div class="help-section-sub">Step-by-step guide to book a guest</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">Click <strong>New Reservation</strong> in the sidebar or the <strong>＋ New Reservation</strong> button in the top bar.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text"><strong>Step 1 — Guest Details:</strong> Enter the guest's full name, address, contact number (10–15 digits), and optional email.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text"><strong>Step 2 — Select Dates:</strong> Choose check-in and check-out dates. Both must be today or in the future. Check-out must be after check-in.</div></li>
+                    <li><div class="step-num">4</div><div class="step-text"><strong>Step 3 — Choose Room:</strong> Available rooms for the selected dates are shown as cards. Click a room card to select it.</div></li>
+                    <li><div class="step-num">5</div><div class="step-text"><strong>Step 4 — Confirm:</strong> Review the booking summary and estimated bill total. Click <strong>Confirm Reservation</strong> to finalise.</div></li>
+                    <li><div class="step-num">6</div><div class="step-text">A success screen will show the new Reservation ID. You can then generate the bill or add another reservation.</div></li>
+                </ul>
+                <div class="tip-box">
+                    <span class="tip-icon">💡</span>
+                    <div class="tip-text"><strong>Tip:</strong> If no rooms appear in Step 3, the selected dates are fully booked. Try different dates or check the Rooms page to verify availability.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: BILLS -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(245,158,11,0.15);">🧾</div>
+                    <div>
+                        <div class="help-section-title">Generating & Printing Bills</div>
+                        <div class="help-section-sub">How to create and print invoices</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">Go to <strong>Reservations</strong> and find the booking you want to bill. Click the <strong>Bill</strong> button in the Actions column.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text">If no bill exists yet, click <strong>Generate Bill</strong>. The system automatically calculates: <em>Room Rate × Number of Nights</em>.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text">Once generated, the professional invoice will appear showing guest details, room info, dates, and total amount.</div></li>
+                    <li><div class="step-num">4</div><div class="step-text">Click <strong>Mark as Paid</strong> once the guest has paid. The bill will show a green <em>PAID</em> stamp.</div></li>
+                    <li><div class="step-num">5</div><div class="step-text">Click <strong>Print Bill</strong> to open the browser print dialog. The sidebar and controls are automatically hidden for a clean printout.</div></li>
+                </ul>
+                <div class="tip-box">
+                    <span class="tip-icon">💡</span>
+                    <div class="tip-text"><strong>Tip:</strong> You can also find all bills in the <strong>Billing</strong> section in the sidebar, where you can filter by paid/pending status.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: ROOMS -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(124,58,237,0.15);">🏨</div>
+                    <div>
+                        <div class="help-section-title">Managing Rooms</div>
+                        <div class="help-section-sub">Add, edit and toggle room availability</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">Go to <strong>Rooms</strong> in the sidebar to view all room cards with their current availability status.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text">Click <strong>＋ Add Room</strong> to create a new room. Enter room number, type (Standard/Deluxe/Suite), price per night, and description.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text">Click the <strong>✏️ Edit</strong> button on any room card to update its type, price, description, or availability status.</div></li>
+                    <li><div class="step-num">4</div><div class="step-text">Use the <strong>Set Unavailable / Set Available</strong> toggle button on each card for quick availability switching without editing.</div></li>
+                </ul>
+                <div class="tip-box">
+                    <span class="tip-icon">💡</span>
+                    <div class="tip-text"><strong>Note:</strong> A room marked as <em>Unavailable</em> will not appear in the room selection step when creating new reservations, even if no booking exists for those dates.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: CANCEL -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(239,68,68,0.15);">❌</div>
+                    <div>
+                        <div class="help-section-title">Cancelling a Reservation</div>
+                        <div class="help-section-sub">How to cancel an existing booking</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">Go to <strong>Reservations</strong> and locate the booking to cancel.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text">Click the <strong>Cancel</strong> button in the Actions column, or open the reservation and click <strong>Cancel Reservation</strong>.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text">A confirmation modal will appear. Click <strong>Yes, Cancel It</strong> to confirm. This action cannot be undone.</div></li>
+                    <li><div class="step-num">4</div><div class="step-text">The reservation status will change to <strong>CANCELLED</strong> and the room will become available for new bookings.</div></li>
+                </ul>
+                <div class="tip-box">
+                    <span class="tip-icon">⚠️</span>
+                    <div class="tip-text"><strong>Warning:</strong> Cancellation is permanent. If a bill has already been generated for the reservation, it will remain in the system but the reservation will be marked cancelled.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: REPORTS -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(16,185,129,0.15);">📈</div>
+                    <div>
+                        <div class="help-section-title">Reports & Analytics</div>
+                        <div class="help-section-sub">Understanding the reports page</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">The <strong>Reports</strong> page shows live analytics calculated directly from all reservation data.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text">The <strong>Status Doughnut</strong> shows the ratio of confirmed vs cancelled reservations at a glance.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text">The <strong>Room Type Bar Chart</strong> shows which room types (Standard, Deluxe, Suite) are most frequently booked.</div></li>
+                    <li><div class="step-num">4</div><div class="step-text">The <strong>Reservation Trend Line</strong> shows how bookings have grown or changed over time by month.</div></li>
+                    <li><div class="step-num">5</div><div class="step-text">The <strong>Top Guests</strong> table shows the most frequent visitors ranked by number of bookings and total nights stayed.</div></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 7: AUDIT -->
+        <div class="help-section">
+            <div class="help-section-header" onclick="toggleSection(this)">
+                <div class="help-section-left">
+                    <div class="help-section-icon" style="background:rgba(107,114,128,0.15);">🔍</div>
+                    <div>
+                        <div class="help-section-title">Audit Logs</div>
+                        <div class="help-section-sub">Tracking system activity</div>
+                    </div>
+                </div>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="help-section-body">
+                <ul class="step-list">
+                    <li><div class="step-num">1</div><div class="step-text">Every action in the system (login, reservation creation, billing, cancellation) is automatically recorded with a timestamp.</div></li>
+                    <li><div class="step-num">2</div><div class="step-text">The Audit Logs page shows the last <strong>100 actions</strong>. Use the search bar to find specific actions or users.</div></li>
+                    <li><div class="step-num">3</div><div class="step-text">Use the <strong>Action filter</strong> dropdown to view only a specific type of action, such as all logins or all cancellations.</div></li>
+                    <li><div class="step-num">4</div><div class="step-text">Click the <strong>↻ Refresh</strong> button to reload the latest logs at any time.</div></li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align:center;padding:2rem 0;color:var(--subtext);font-size:0.825rem;">
+            Ocean View Resort Management System · CIS6003 Advanced Programming · Cardiff Metropolitan University
+        </div>
+
+    </div>
+</main>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    const username = localStorage.getItem('username') || 'Admin';
+    document.getElementById('userName').textContent = username;
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+    function toggleSection(header) {
+      const body = header.nextElementSibling;
+      const chevron = header.querySelector('.chevron');
+      body.classList.toggle('open');
+      chevron.classList.toggle('open');
+    }
+
+    // Open first section by default
+    document.querySelector('.help-section-header').click();
+
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('show');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+      localStorage.clear(); window.location.href = 'login.html';
+    });
+</script>
+</body>
+</html>

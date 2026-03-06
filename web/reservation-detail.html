@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Reservation Detail — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="/js/theme.js"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+          --primary: #FF385C; --primary-hover: #E31C5F;
+          --bg: #0d0d1a; --sidebar-bg: rgba(255,255,255,0.04);
+          --card-bg: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.1);
+          --text: #FFFFFF; --subtext: rgba(255,255,255,0.55);
+          --hover: rgba(255,255,255,0.08);
+          --success: #10B981; --danger: #EF4444; --warning: #F59E0B;
+        }
+        [data-theme="light"] {
+          --bg: #f8f9fc; --sidebar-bg: rgba(255,255,255,0.9);
+          --card-bg: rgba(255,255,255,0.9); --card-border: rgba(0,0,0,0.08);
+          --text: #1a1a2e; --subtext: rgba(26,26,46,0.55);
+          --hover: rgba(0,0,0,0.05);
+        }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; transition: background 0.4s, color 0.4s; }
+
+        /* SIDEBAR */
+        .sidebar { width: 240px; flex-shrink: 0; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 50; transition: transform 0.3s; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid var(--card-border); text-decoration: none; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FF385C, #E31C5F); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: white; box-shadow: 0 4px 12px rgba(255,56,92,0.35); flex-shrink: 0; }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .logo-sub { font-size: 0.65rem; color: var(--subtext); }
+        .nav-section { padding: 1rem 0.75rem 0.5rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtext); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 12px; text-decoration: none; color: var(--subtext); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.15rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .nav-item:hover { background: var(--hover); color: var(--text); }
+        .nav-item.active { background: rgba(255,56,92,0.12); color: var(--primary); font-weight: 500; }
+        .nav-icon { font-size: 1rem; opacity: 0.7; flex-shrink: 0; }
+        .sidebar-footer { margin-top: auto; padding: 1rem 0.75rem; border-top: 1px solid var(--card-border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 12px; background: var(--hover); margin-bottom: 0.5rem; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #FF385C, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .user-name { font-size: 0.825rem; font-weight: 500; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--subtext); }
+
+        /* MAIN */
+        .main { margin-left: 240px; flex: 1; height: 100vh; overflow-y: auto; }
+        .topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--bg); border-bottom: 1px solid var(--card-border); }
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .back-btn { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--subtext); font-size: 0.825rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .back-btn:hover { color: var(--text); background: var(--hover); }
+        .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--text); }
+        .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .btn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; text-decoration: none; }
+        .btn-icon:hover { background: var(--hover); }
+        .btn-primary { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: var(--primary); border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(255,56,92,0.3); text-decoration: none; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-danger { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border-radius: 10px; background: transparent; border: 1px solid var(--danger); color: var(--danger); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .btn-danger:hover { background: rgba(239,68,68,0.1); transform: translateY(-1px); }
+
+        .content { padding: 2rem; max-width: 900px; }
+
+        /* HEADER CARD */
+        .detail-header { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .detail-id { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; color: var(--primary); line-height: 1; }
+        .detail-id-label { font-size: 0.75rem; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+        .detail-created { font-size: 0.78rem; color: var(--subtext); margin-top: 0.4rem; }
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 1rem; border-radius: 100px; font-size: 0.825rem; font-weight: 500; }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .badge.confirmed { background: rgba(16,185,129,0.15); color: #10B981; }
+        .badge.confirmed .badge-dot { background: #10B981; }
+        .badge.cancelled { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .badge.cancelled .badge-dot { background: #EF4444; }
+
+        /* INFO GRID */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .info-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 1.5rem; }
+        .info-card-title { font-size: 0.78rem; font-weight: 500; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .info-row { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 1rem; }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-label { font-size: 0.72rem; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; }
+        .info-value { font-size: 0.9rem; color: var(--text); font-weight: 400; }
+
+        /* STAY CARD */
+        .stay-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .stay-dates { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .stay-date-box { flex: 1; min-width: 150px; background: var(--hover); border-radius: 12px; padding: 1rem; }
+        .stay-date-label { font-size: 0.72rem; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+        .stay-date-value { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--text); }
+        .stay-arrow { font-size: 1.5rem; color: var(--subtext); flex-shrink: 0; }
+        .stay-nights { background: rgba(255,56,92,0.1); border: 1px solid rgba(255,56,92,0.2); border-radius: 12px; padding: 1rem; text-align: center; flex-shrink: 0; }
+        .stay-nights-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--primary); line-height: 1; }
+        .stay-nights-label { font-size: 0.72rem; color: var(--subtext); margin-top: 0.2rem; }
+
+        /* BILL PREVIEW */
+        .bill-preview { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .bill-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: var(--subtext); margin-bottom: 0.6rem; }
+        .bill-total { display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid var(--card-border); margin-top: 0.25rem; }
+        .bill-total-label { font-size: 1rem; font-weight: 600; color: var(--text); }
+        .bill-total-amount { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: var(--primary); }
+
+        /* ACTIONS */
+        .action-bar { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+        /* LOADING / ERROR */
+        .loading-screen { text-align: center; padding: 4rem 2rem; color: var(--subtext); }
+        .loading-icon { font-size: 2.5rem; margin-bottom: 1rem; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-overlay.show { display: flex; }
+        .modal { background: #1a1a2e; border: 1px solid var(--card-border); border-radius: 20px; padding: 2rem; max-width: 420px; width: 90%; animation: modalIn 0.3s ease; }
+        [data-theme="light"] .modal { background: white; }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+        .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--text); margin-bottom: 0.5rem; }
+        .modal-body { font-size: 0.875rem; color: var(--subtext); line-height: 1.6; margin-bottom: 1.5rem; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+        .btn-cancel-modal { padding: 0.6rem 1.2rem; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--subtext); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; }
+        .btn-confirm-modal { padding: 0.6rem 1.2rem; border-radius: 10px; background: var(--danger); border: none; color: white; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; }
+
+        .mobile-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 100; width: 40px; height: 40px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); cursor: pointer; align-items: center; justify-content: center; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+        @media (max-width: 900px) {
+          .sidebar { transform: translateX(-100%); }
+          .sidebar.open { transform: translateX(0); }
+          .main { margin-left: 0; }
+          .mobile-toggle { display: flex; }
+          .sidebar-overlay.show { display: block; }
+          .content { padding: 1rem; }
+          .info-grid { grid-template-columns: 1fr; }
+          .stay-dates { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">OV</div>
+        <div><div class="logo-text">Ocean View</div><div class="logo-sub">Resort Management</div></div>
+    </a>
+    <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="reservations.html" class="nav-item active"><span class="nav-icon">📋</span> Reservations</a>
+        <a href="add-reservation.html" class="nav-item"><span class="nav-icon">➕</span> New Reservation</a>
+        <a href="rooms.html" class="nav-item"><span class="nav-icon">🏨</span> Rooms</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <a href="bills.html" class="nav-item"><span class="nav-icon">🧾</span> Billing</a>
+        <a href="reports.html" class="nav-item"><span class="nav-icon">📈</span> Reports</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-label">System</div>
+        <a href="audit.html" class="nav-item"><span class="nav-icon">🔍</span> Audit Logs</a>
+        <a href="help.html" class="nav-item"><span class="nav-icon">❓</span> Help</a>
+        <a href="settings.html" class="nav-item" id="settingsNavItem"><span class="nav-icon">⚙️</span> Settings</a>
+    </div>
+
+
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div><div class="user-name" id="userName">Admin</div><div class="user-role">Staff Portal</div></div>
+        </div>
+        <button class="nav-item" id="logoutBtn" style="color:#EF4444;"><span class="nav-icon">🚪</span> Sign Out</button>
+    </div>
+</aside>
+
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="reservations.html" class="back-btn">← Back</a>
+            <div class="topbar-title">Reservation Detail</div>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn-icon" id="themeBtn">🌙</button>
+        </div>
+    </div>
+
+    <div class="content" id="mainContent">
+        <div class="loading-screen">
+            <div class="loading-icon">⏳</div>
+            <div>Loading reservation...</div>
+        </div>
+    </div>
+</main>
+
+<!-- CANCEL MODAL -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal">
+        <div class="modal-title">Cancel Reservation</div>
+        <div class="modal-body">Are you sure you want to cancel this reservation? This action cannot be undone.</div>
+        <div class="modal-actions">
+            <button class="btn-cancel-modal" onclick="document.getElementById('cancelModal').classList.remove('show')">Keep It</button>
+            <button class="btn-confirm-modal" id="confirmCancelBtn">Yes, Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+
+    const username = localStorage.getItem('username') || 'Admin';
+    document.getElementById('userName').textContent = username;
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+    const params = new URLSearchParams(window.location.search);
+    const reservationId = params.get('id');
+
+    if (!reservationId) window.location.href = 'reservations.html';
+
+    let reservation = null;
+
+    async function loadReservation() {
+      try {
+        const res = await fetch(`/api/reservations/${reservationId}`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          reservation = data.data;
+          renderDetail(reservation);
+        } else {
+          showError('Reservation not found.');
+        }
+      } catch (e) {
+        showError('Failed to load reservation.');
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById('mainContent').innerHTML = `
+        <div class="loading-screen">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">❌</div>
+          <div>${msg}</div>
+          <a href="reservations.html" style="color:var(--primary);margin-top:1rem;display:inline-block;">← Back to Reservations</a>
+        </div>`;
+    }
+
+    function renderDetail(r) {
+      const nights = Math.round((new Date(r.checkOutDate) - new Date(r.checkInDate)) / 86400000);
+      const total = nights * r.pricePerNight;
+      const isCancelled = r.status === 'CANCELLED';
+
+      document.getElementById('mainContent').innerHTML = `
+        <!-- HEADER -->
+        <div class="detail-header">
+          <div>
+            <div class="detail-id-label">Reservation ID</div>
+            <div class="detail-id">#${String(r.reservationId).padStart(4,'0')}</div>
+            <div class="detail-created">Created: ${r.createdAt || 'N/A'}</div>
+          </div>
+          <span class="badge ${r.status.toLowerCase()}">
+            <span class="badge-dot"></span>${r.status}
+          </span>
+        </div>
+
+        <!-- INFO GRID -->
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-card-title">👤 Guest Information</div>
+            <div class="info-row">
+              <div class="info-label">Full Name</div>
+              <div class="info-value">${r.guestName}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Guest ID</div>
+              <div class="info-value">#${r.guestId}</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-title">🏨 Room Information</div>
+            <div class="info-row">
+              <div class="info-label">Room Number</div>
+              <div class="info-value">Room ${r.roomNumber}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Room Type</div>
+              <div class="info-value">${r.roomType}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">Rate Per Night</div>
+              <div class="info-value">LKR ${r.pricePerNight.toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STAY DATES -->
+        <div class="stay-card">
+          <div class="info-card-title" style="margin-bottom:1rem;">📅 Stay Duration</div>
+          <div class="stay-dates">
+            <div class="stay-date-box">
+              <div class="stay-date-label">Check-In</div>
+              <div class="stay-date-value">${r.checkInDate}</div>
+            </div>
+            <div class="stay-arrow">→</div>
+            <div class="stay-nights">
+              <div class="stay-nights-num">${nights}</div>
+              <div class="stay-nights-label">Night${nights !== 1 ? 's' : ''}</div>
+            </div>
+            <div class="stay-arrow">→</div>
+            <div class="stay-date-box">
+              <div class="stay-date-label">Check-Out</div>
+              <div class="stay-date-value">${r.checkOutDate}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BILL PREVIEW -->
+        <div class="bill-preview">
+          <div class="info-card-title" style="margin-bottom:1rem;">💰 Cost Estimate</div>
+          <div class="bill-row"><span>Room rate</span><span>LKR ${r.pricePerNight.toLocaleString()} / night</span></div>
+          <div class="bill-row"><span>Duration</span><span>${nights} night${nights !== 1 ? 's' : ''}</span></div>
+          <div class="bill-total">
+            <span class="bill-total-label">Estimated Total</span>
+            <span class="bill-total-amount">LKR ${total.toLocaleString()}</span>
+          </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="action-bar">
+          <a href="bill.html?id=${r.reservationId}" class="btn-primary">🧾 Generate Bill</a>
+          ${!isCancelled ? `<button class="btn-danger" onclick="document.getElementById('cancelModal').classList.add('show')">✕ Cancel Reservation</button>` : ''}
+          <a href="reservations.html" style="padding:0.55rem 1.2rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--card-border);color:var(--subtext);font-family:'DM Sans',sans-serif;font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">← All Reservations</a>
+        </div>
+      `;
+    }
+
+    // Cancel
+    document.getElementById('confirmCancelBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('confirmCancelBtn');
+      btn.textContent = 'Cancelling...'; btn.disabled = true;
+      try {
+        const res = await fetch(`/api/reservations/${reservationId}/cancel`, {
+          method: 'PUT', headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('cancelModal').classList.remove('show');
+          loadReservation();
+        } else {
+          alert(data.message || 'Failed to cancel.');
+        }
+      } catch (e) { alert('Server error.'); }
+      btn.textContent = 'Yes, Cancel'; btn.disabled = false;
+    });
+
+    // Mobile sidebar
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('show');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+
+    loadReservation();
+</script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Staff Login — Ocean View Resort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="/js/theme.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+          --primary: #FF385C;
+          --primary-hover: #E31C5F;
+          --text: #FFFFFF;
+          --subtext: rgba(255,255,255,0.6);
+          --glass-bg: rgba(255,255,255,0.06);
+          --glass-border: rgba(255,255,255,0.12);
+          --input-bg: rgba(255,255,255,0.08);
+          --input-border: rgba(255,255,255,0.15);
+          --input-focus: rgba(255,56,92,0.4);
+          --card-bg: rgba(255,255,255,0.07);
+        }
+        [data-theme="light"] {
+          --text: #222222;
+          --subtext: rgba(34,34,34,0.6);
+          --glass-bg: rgba(255,255,255,0.7);
+          --glass-border: rgba(255,255,255,0.9);
+          --input-bg: rgba(255,255,255,0.8);
+          --input-border: rgba(34,34,34,0.15);
+          --card-bg: rgba(255,255,255,0.75);
+        }
+
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+          font-family: 'DM Sans', sans-serif;
+          background: #0a0a14;
+          color: var(--text);
+          display: flex; align-items: center; justify-content: center;
+          min-height: 100vh;
+          transition: color 0.4s;
+        }
+
+        /* ── ANIMATED BG ── */
+        .bg {
+          position: fixed; inset: 0; z-index: 0;
+          background: linear-gradient(135deg, #0a0a14 0%, #1a0a14 50%, #0a0a24 100%);
+          overflow: hidden;
+        }
+        .bg-orb {
+          position: absolute; border-radius: 50%;
+          filter: blur(80px); opacity: 0.3;
+          animation: float 8s ease-in-out infinite;
+        }
+        .bg-orb-1 { width: 500px; height: 500px; background: #FF385C; top: -150px; left: -150px; animation-delay: 0s; }
+        .bg-orb-2 { width: 400px; height: 400px; background: #7C3AED; bottom: -100px; right: -100px; animation-delay: -3s; }
+        .bg-orb-3 { width: 300px; height: 300px; background: #0EA5E9; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -6s; }
+        @keyframes float {
+          0%,100% { transform: translate(0,0) scale(1); }
+          33% { transform: translate(30px,-20px) scale(1.05); }
+          66% { transform: translate(-20px,15px) scale(0.95); }
+        }
+
+        [data-theme="light"] .bg { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #eff6ff 100%); }
+        [data-theme="light"] .bg-orb { opacity: 0.15; }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+          position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100;
+          width: 42px; height: 42px; border-radius: 50%;
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          color: var(--text); cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.1rem; transition: all 0.3s;
+          backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
+
+        /* ── BACK LINK ── */
+        .back-link {
+          position: fixed; top: 1.5rem; left: 1.5rem; z-index: 100;
+          display: flex; align-items: center; gap: 0.5rem;
+          color: var(--subtext); text-decoration: none; font-size: 0.875rem;
+          padding: 0.5rem 1rem; border-radius: 100px;
+          background: var(--glass-bg); border: 1px solid var(--glass-border);
+          backdrop-filter: blur(10px); transition: all 0.3s;
+        }
+        .back-link:hover { color: var(--text); background: rgba(255,255,255,0.12); transform: translateX(-2px); }
+
+        /* ── LOGIN CARD ── */
+        .login-wrapper {
+          position: relative; z-index: 10;
+          width: 100%; max-width: 420px;
+          padding: 1.5rem;
+          animation: fadeUp 0.8s ease both;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+
+        .login-card {
+          background: var(--card-bg);
+          border: 1px solid var(--glass-border);
+          backdrop-filter: blur(24px);
+          border-radius: 28px;
+          padding: 2.5rem;
+          box-shadow: 0 25px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        .card-header { text-align: center; margin-bottom: 2rem; }
+
+        .logo {
+          width: 56px; height: 56px;
+          background: linear-gradient(135deg, #FF385C, #E31C5F);
+          border-radius: 16px;
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.4rem; font-weight: 600; color: white;
+          margin: 0 auto 1.2rem;
+          box-shadow: 0 8px 25px rgba(255,56,92,0.4);
+        }
+
+        .card-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.8rem; font-weight: 400;
+          color: var(--text); line-height: 1.2;
+          margin-bottom: 0.4rem;
+        }
+        .card-title em { font-style: italic; color: var(--primary); }
+        .card-subtitle { font-size: 0.85rem; color: var(--subtext); font-weight: 300; }
+
+        /* ── FORM ── */
+        .form-group { margin-bottom: 1.2rem; }
+
+        .form-label {
+          display: block; font-size: 0.78rem; font-weight: 500;
+          color: var(--subtext); letter-spacing: 0.06em;
+          text-transform: uppercase; margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper { position: relative; }
+
+        .input-icon {
+          position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+          font-size: 1rem; pointer-events: none; opacity: 0.6;
+        }
+
+        .form-input {
+          width: 100%; padding: 0.875rem 1rem 0.875rem 2.8rem;
+          background: var(--input-bg); border: 1px solid var(--input-border);
+          border-radius: 14px; color: var(--text);
+          font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+          transition: all 0.3s; outline: none;
+          backdrop-filter: blur(8px);
+        }
+        .form-input::placeholder { color: var(--subtext); }
+        .form-input:focus {
+          border-color: var(--primary);
+          box-shadow: 0 0 0 3px var(--input-focus);
+          background: rgba(255,255,255,0.1);
+        }
+
+        .toggle-password {
+          position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+          background: none; border: none; color: var(--subtext);
+          cursor: pointer; font-size: 1rem; padding: 0.2rem;
+          transition: color 0.2s;
+        }
+        .toggle-password:hover { color: var(--text); }
+
+        /* ── ERROR MSG ── */
+        .error-msg {
+          display: none; align-items: center; gap: 0.5rem;
+          padding: 0.75rem 1rem; border-radius: 12px;
+          background: rgba(255,56,92,0.12); border: 1px solid rgba(255,56,92,0.3);
+          color: #FF385C; font-size: 0.83rem; margin-bottom: 1.2rem;
+          animation: shake 0.4s ease;
+        }
+        .error-msg.show { display: flex; }
+        @keyframes shake {
+          0%,100%{transform:translateX(0);}
+          25%{transform:translateX(-6px);}
+          75%{transform:translateX(6px);}
+        }
+
+        /* ── SUBMIT BTN ── */
+        .btn-login {
+          width: 100%; padding: 1rem;
+          background: linear-gradient(135deg, #FF385C, #E31C5F);
+          border: none; border-radius: 14px;
+          color: white; font-family: 'DM Sans', sans-serif;
+          font-size: 1rem; font-weight: 500; cursor: pointer;
+          transition: all 0.3s; margin-top: 0.5rem;
+          box-shadow: 0 6px 20px rgba(255,56,92,0.35);
+          display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+          position: relative; overflow: hidden;
+        }
+        .btn-login::before {
+          content: ''; position: absolute; inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+          opacity: 0; transition: opacity 0.3s;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,56,92,0.5); }
+        .btn-login:hover::before { opacity: 1; }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* ── LOADING SPINNER ── */
+        .spinner {
+          display: none; width: 18px; height: 18px;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: white; border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── DIVIDER ── */
+        .divider {
+          display: flex; align-items: center; gap: 1rem;
+          margin: 1.5rem 0; color: var(--subtext); font-size: 0.78rem;
+        }
+        .divider::before, .divider::after {
+          content: ''; flex: 1; height: 1px;
+          background: var(--glass-border);
+        }
+
+        /* ── INFO BOX ── */
+        .info-box {
+          background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
+          border-radius: 14px; padding: 1rem 1.2rem;
+          display: flex; align-items: flex-start; gap: 0.75rem;
+        }
+        .info-box-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+        .info-box-text { font-size: 0.78rem; color: var(--subtext); line-height: 1.6; }
+        .info-box-text strong { color: var(--text); font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="bg">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+</div>
+
+<a href="index.html" class="back-link">← Back to Home</a>
+<button class="theme-toggle" id="themeBtn">🌙</button>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <div class="card-header">
+            <div class="logo">OV</div>
+            <h1 class="card-title">Welcome <em>Back</em></h1>
+            <p class="card-subtitle">Ocean View Resort · Staff Portal</p>
+        </div>
+
+        <div class="error-msg" id="errorMsg">
+            <span>⚠️</span>
+            <span id="errorText">Invalid username or password.</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" id="username" class="form-input"
+                       placeholder="Enter your username" autocomplete="username"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="password" class="form-input"
+                       placeholder="Enter your password" autocomplete="current-password"/>
+                <button class="toggle-password" id="togglePwd" type="button">👁️</button>
+            </div>
+        </div>
+
+        <button class="btn-login" id="loginBtn">
+            <div class="spinner" id="spinner"></div>
+            <span id="btnText">Sign In to Portal</span>
+        </button>
+
+        <div class="divider">Staff access only</div>
+
+        <div class="info-box">
+            <span class="info-box-icon">ℹ️</span>
+            <div class="info-box-text">
+                <strong>Default credentials</strong><br>
+                Username: <strong>admin</strong> · Password: <strong>Admin@1234</strong><br>
+                Contact your system administrator if you need access.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+
+    // Toggle password visibility
+    document.getElementById('togglePwd').addEventListener('click', function() {
+      const pwd = document.getElementById('password');
+      const isText = pwd.type === 'text';
+      pwd.type = isText ? 'password' : 'text';
+      this.textContent = isText ? '👁️' : '🙈';
+    });
+
+    // Login
+    document.getElementById('loginBtn').addEventListener('click', handleLogin);
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+
+    async function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const errorText = document.getElementById('errorText');
+      const loginBtn = document.getElementById('loginBtn');
+      const spinner = document.getElementById('spinner');
+      const btnText = document.getElementById('btnText');
+
+      // Clear error
+      errorMsg.classList.remove('show');
+
+      // Validate
+      if (!username || !password) {
+        errorText.textContent = 'Please enter both username and password.';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      // Loading state
+      loginBtn.disabled = true;
+      spinner.style.display = 'block';
+      btnText.textContent = 'Signing in...';
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Save token and user info
+          localStorage.setItem('token', data.data.token);
+          localStorage.setItem('username', username);
+          btnText.textContent = '✓ Success! Redirecting...';
+          setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+        } else {
+          errorText.textContent = data.message || 'Invalid username or password.';
+          errorMsg.classList.add('show');
+          loginBtn.disabled = false;
+          spinner.style.display = 'none';
+          btnText.textContent = 'Sign In to Portal';
+        }
+      } catch (err) {
+        errorText.textContent = 'Cannot connect to server. Make sure the server is running.';
+        errorMsg.classList.add('show');
+        loginBtn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = 'Sign In to Portal';
+      }
+    }
+</script>
+</body>
+</html>
