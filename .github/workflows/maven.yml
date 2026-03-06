@@ -18,15 +18,7 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+        cache: maven
 
-    - name: Build and Test with Maven
-      run: mvn test -Dtest="PasswordUtilTest,DateUtilTest" --no-transfer-progress
-```
-
-**Important — the last line runs only PasswordUtilTest and DateUtilTest** because those tests don't need a database. The other tests need MySQL which GitHub Actions doesn't have, so they would fail. This keeps your CI green.
-
-**Then in Git Bash run:**
-```
-git add .
-git commit -m "ci: add GitHub Actions workflow for automated Maven testing"
-git push origin main
+    - name: Run utility tests only
+      run: mvn test -pl . -Dtest="PasswordUtilTest,DateUtilTest" -DfailIfNoTests=false --no-transfer-progress
